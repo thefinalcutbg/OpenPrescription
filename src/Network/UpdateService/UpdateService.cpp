@@ -12,7 +12,7 @@ constexpr int programVersion = 1;
 bool UpdateService::restartForUpdate()
 {
 	auto m_reply = NetworkManager::simpleRequest(
-        "https://raw.githubusercontent.com/thefinalcutbg/OpenPrescription/main/version"
+        "https://raw.githubusercontent.com/thefinalcutbg/OpenPrescription/main/version.json"
     );
 
     QEventLoop loop;
