@@ -31,7 +31,10 @@
      <number>0</number>
     </property>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0,0,0">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0">
+      <property name="spacing">
+       <number>6</number>
+      </property>
       <property name="sizeConstraint">
        <enum>QLayout::SetFixedSize</enum>
       </property>
@@ -58,7 +61,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="perscrButton">
+       <widget class="HalfRoundedButton" name="perscrButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -68,17 +71,17 @@
         <property name="minimumSize">
          <size>
           <width>120</width>
-          <height>0</height>
+          <height>40</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>35</height>
+          <height>16777215</height>
          </size>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Нова рецепта&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string/>
         </property>
         <property name="text">
          <string>Нова рецепта</string>
@@ -86,7 +89,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="openButton">
+       <widget class="HalfRoundedButton" name="openButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -96,17 +99,17 @@
         <property name="minimumSize">
          <size>
           <width>120</width>
-          <height>0</height>
+          <height>40</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>300</width>
-          <height>35</height>
+          <width>16777215</width>
+          <height>16777215</height>
          </size>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Отвори документи&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string/>
         </property>
         <property name="text">
          <string>Пациенти</string>
@@ -130,40 +133,17 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="practiceLabel">
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-          <bold>true</bold>
-         </font>
+       <widget class="HalfRoundedButton" name="userButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="userButton">
         <property name="minimumSize">
          <size>
           <width>120</width>
-          <height>35</height>
+          <height>40</height>
          </size>
         </property>
         <property name="text">
@@ -214,6 +194,11 @@
    <extends>QWidget</extends>
    <header>View/Widgets/TabView.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>HalfRoundedButton</class>
+   <extends>QPushButton</extends>
+   <header>View/uiComponents/halfroundedbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources>

@@ -18,21 +18,15 @@ OpenPrescription::OpenPrescription(QWidget* parent)
    // ui.saveButton->setIcon(QIcon(":/icons/icon_save.png"));
    // ui.openButton->setIcon(QIcon(":/icons/icon_open.png"));
 
-    ui.userButton->setIcon(QIcon{ ":/icons/icon_user.png" });
+    ui.perscrButton->setPosition(HalfRoundedButton::Position::Alone);
+    ui.openButton->setPosition(HalfRoundedButton::Position::Alone);
+    ui.userButton->setPosition(HalfRoundedButton::Position::Alone);
 
    // connect(ui.saveButton, &QPushButton::clicked, [&] { presenter.save(); });
     connect(ui.openButton, &QPushButton::clicked, [&] {presenter.showListSelector(); });
     connect(ui.perscrButton, &QPushButton::clicked, [&] { presenter.newPerscriptionPressed(); });
     connect(ui.userButton, &QPushButton::clicked, [&] { presenter.editDoctor(); });
 
-    ui.practiceLabel->setStyleSheet("color:" + Theme::colorToString(Theme::practiceLabel));
-    
-    int id = QFontDatabase::addApplicationFont(":/fonts/font_RobotoCondensedRegular.ttf");
-    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
-    QFont font(family);
-    font.setBold(true);
-    font.setPointSize(14);
-    ui.practiceLabel->setFont(font);
 /*
     setStyleSheet(
         "QMenu{"
@@ -74,6 +68,7 @@ ITabView* OpenPrescription::tabView()
 void OpenPrescription::setUserLabel(const std::string& doctorName)
 {
     ui.userButton->setText(QString::fromStdString("  " + doctorName));
+    ui.userButton->adjustSize();
 }
 
 void OpenPrescription::exitProgram()

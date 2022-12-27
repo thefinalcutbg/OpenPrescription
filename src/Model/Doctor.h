@@ -13,7 +13,6 @@ struct Doctor
 	std::string RZI;
 	std::string LPK;
 	std::string fname;
-	std::string mname;
 	std::string lname;
 	std::string egn;
 	Specialty specialty;

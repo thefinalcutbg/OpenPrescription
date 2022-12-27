@@ -9,12 +9,7 @@
 
 class DoctorDialogPresenter
 {
-	bool m_editMode;
-	bool m_newDoctor;
-
 	IDoctorSettingsDialog* view{nullptr};
-
-	std::string current_LPK;
 
 	std::optional<Doctor> result;
 

@@ -8,11 +8,11 @@ class HalfRoundedButton : public QPushButton
 	Q_OBJECT
 
 public:
-	enum class Position { Right, Center, Left };
+	enum class Position { Right, Center, Left, Alone };
 
 	void setPosition(Position p) {m_position = p; update();}
 	HalfRoundedButton(QWidget* parent);
-;
+
 	~HalfRoundedButton();
 
 private:

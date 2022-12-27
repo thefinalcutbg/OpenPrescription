@@ -36,16 +36,16 @@ HalfRoundedButton::HalfRoundedButton(QWidget *parent)
 void HalfRoundedButton::paintEvent(QPaintEvent* event)
 {
 	QPainter painter(this);
-
-	QColor color{ isChecked() ? Theme::fontTurquoiseClicked : Theme::sectionBackground };
+	painter.setRenderHint(QPainter::RenderHint::Antialiasing);
+	QColor color{ isChecked() ? Theme::background : Theme::sectionBackground };
 
 	if (m_hover && !isChecked())
 	{
-		color = Theme::mainBackgroundColor;
+		color = Theme::background;
 	}
 	
 
-	QPen pen(Theme::border);
+	QPen pen(Theme::fontTurquoiseClicked);
 	pen.setCosmetic(true);
 	pen.setWidth(2);
 	painter.setPen(pen);
@@ -54,6 +54,7 @@ void HalfRoundedButton::paintEvent(QPaintEvent* event)
 
 	switch (m_position)
 	{
+	case Position::Alone: path.addRoundedRect(0, 0, width(), height(), 8, 8); break;
 	case Position::Center: path.addRect(this->rect()); break;
 	case Position::Left: path = Theme::getHalfCurvedPath(width(), height()); break;
 	case Position::Right:
@@ -62,16 +63,18 @@ void HalfRoundedButton::paintEvent(QPaintEvent* event)
 			QTransform mirror(-1, 0, 0, 0, 1, 0, 0, 0, 1);
 			painter.setTransform(mirror);
 			painter.translate(-width(), 0);
+			break;
 		}
+
 	}
 
 	painter.fillPath(path, color);
-	painter.drawPath(path);
+	//painter.drawPath(path);
 
 	painter.resetTransform();
 
 
-	painter.setPen(isChecked() || m_hover ? Theme::sectionBackground : Theme::mainBackgroundColor);
+	painter.setPen(isChecked() || m_hover ? Theme::fontTurquoise : Theme::fontTurquoiseClicked);
 
 	painter.drawText(rect(), Qt::AlignCenter, text());
 

@@ -6,10 +6,15 @@
 #include "Model/User.h"
 #include "Presenter/DoctorDialogPresenter.h"
 #include "Database/DbDoctor.h"
-
+#include "Database/DbUpdateStatus.h"
 MainPresenter::MainPresenter()
 {
     User::setCurrentDoctor(DbDoctor::getDoctor());
+
+    auto uDate = DbUpdateStatus::lastUpdated(DynamicNum::Medication);
+
+    if (uDate == Date::currentDate()) return;
+
     num_update_service.update();
 }
 

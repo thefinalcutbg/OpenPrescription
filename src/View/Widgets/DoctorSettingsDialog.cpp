@@ -21,7 +21,6 @@ DoctorSettingsDialog::DoctorSettingsDialog(DoctorDialogPresenter* presenter, QWi
 	lineEdits[DoctorFields::RZI] = ui.rziEdit;
 	lineEdits[DoctorFields::EGN] = ui.egnLineEdit;
 	lineEdits[DoctorFields::FirstName] = ui.fNameEdit;
-	lineEdits[DoctorFields::MiddleName] = ui.mNameEdit;
 	lineEdits[DoctorFields::LastName] = ui.lNameEdit;
 	lineEdits[DoctorFields::Phone] = ui.phoneEdit;
 	lineEdits[DoctorFields::LPK] = ui.lpkEdit;
@@ -57,7 +56,6 @@ void DoctorSettingsDialog::setDoctor(const Doctor& doctor)
 	ui.egnLineEdit->set_Text(doctor.egn);
 	ui.lpkEdit->set_Text(doctor.LPK);
 	ui.fNameEdit->set_Text(doctor.fname);
-	ui.mNameEdit->set_Text(doctor.mname);
 	ui.lNameEdit->set_Text(doctor.lname);
 	ui.phoneEdit->set_Text(doctor.phone);
 
@@ -80,7 +78,6 @@ Doctor DoctorSettingsDialog::getDoctor()
 	doctor.egn = ui.egnLineEdit->getText();
 	doctor.LPK = ui.lpkEdit->getText();
 	doctor.fname = ui.fNameEdit->getText();
-	doctor.mname = ui.mNameEdit->getText();
 	doctor.lname = ui.lNameEdit->getText();
 	doctor.phone = ui.phoneEdit->getText();
 	doctor.specialty = ui.specialtyButton->text().toStdString();

@@ -138,7 +138,7 @@ void TabPresenter::open(const RowInstance& row, bool setFocus)
         newTab = new PrescriptionPresenter(view, this, getPatient_ptr(DbPatient::get(row.patientRowId)), row.rowID);
         break;
         case TabType::PatientSummary:
-        newTab = new PrescriptionPresenter(view, this, getPatient_ptr(DbPatient::get(row.patientRowId)), row.rowID);
+        newTab = new PrescriptionPresenter(view, this, getPatient_ptr(DbPatient::get(row.patientRowId)), 0);
         break;
     }
 
