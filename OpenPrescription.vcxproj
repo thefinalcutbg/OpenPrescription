@@ -1,0 +1,356 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4FAD333D-423D-46A9-A952-117829B282C3}</ProjectGuid>
+    <Keyword>QtVS_v304</Keyword>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0.22000.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.22000.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
+    <QtInstall>6.3.1_msvc2019_64</QtInstall>
+    <QtModules>core;gui;network;widgets;core5compat</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
+    <QtInstall>6.3.1_msvc2019_64</QtInstall>
+    <QtModules>core;gui;network;widgets;core5compat</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);$(SolutionDir)\include;$(SolutionDir)\src</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Dev\OpenPrescription\dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcrypto.lib;libp11.lib;libssl.lib;libxml2.lib;libxmlsec.lib;libxmlsec-openssl.lib;pkcs11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);$(SolutionDir)\include;$(SolutionDir)\src</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Dev\OpenPrescription\dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcrypto.lib;libp11.lib;libssl.lib;libxml2.lib;libxmlsec.lib;libxmlsec-openssl.lib;pkcs11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Database\DbUpdateStatus.cpp" />
+    <ClCompile Include="src\Database\DbDoctor.cpp" />
+    <ClCompile Include="src\Model\Date.cpp" />
+    <ClCompile Include="src\Model\Ekatte.cpp" />
+    <ClCompile Include="src\Model\FreeFunctions.cpp" />
+    <ClCompile Include="src\Model\Parser.cpp" />
+    <ClCompile Include="src\Model\Patient.cpp" />
+    <ClCompile Include="src\Model\Prescription\Dosage.cpp" />
+    <ClCompile Include="src\Model\Prescription\DoseQuantity.cpp" />
+    <ClCompile Include="src\Model\Prescription\Medication.cpp" />
+    <ClCompile Include="src\Model\Prescription\Prescription.cpp" />
+    <ClCompile Include="src\Model\Prescription\Route.cpp" />
+    <ClCompile Include="src\Model\Prescription\TimeLapse.cpp" />
+    <ClCompile Include="src\Model\Prescription\WhenToTake.cpp" />
+    <ClCompile Include="src\Model\Specialty.cpp" />
+    <ClCompile Include="src\Model\User.cpp" />
+    <ClCompile Include="src\Model\Validators\CommonValidators.cpp" />
+    <ClCompile Include="src\Model\Validators\DateValidator.cpp" />
+    <ClCompile Include="src\Model\Validators\LpkValidator.cpp" />
+    <ClCompile Include="src\Model\Validators\NameValidator.cpp" />
+    <ClCompile Include="src\Model\Validators\PatientValidators.cpp" />
+    <ClCompile Include="src\Model\Validators\PrescriptionValidators.cpp" />
+    <ClCompile Include="src\Model\Validators\RziValidator.cpp" />
+    <ClCompile Include="src\Network\AbstractReplyHandler.cpp" />
+    <ClCompile Include="src\Network\Base64Convert.cpp" />
+    <ClCompile Include="src\Network\HIS\EPrescription.cpp" />
+    <ClCompile Include="src\Network\HIS\GetNumenclature.cpp" />
+    <ClCompile Include="src\Network\HIS\HisService.cpp" />
+    <ClCompile Include="src\Network\HIS\HisToken.cpp" />
+    <ClCompile Include="src\Network\HIS\UpdateMedications.cpp" />
+    <ClCompile Include="src\Network\NetworkManager.cpp" />
+    <ClCompile Include="src\Network\PKCS11.cpp" />
+    <ClCompile Include="src\Network\UpdateService\UpdateService.cpp" />
+    <ClCompile Include="src\Network\XmlSigner.cpp" />
+    <ClCompile Include="src\Path.cpp" />
+    <ClCompile Include="src\Presenter\DoctorDialogPresenter.cpp" />
+    <ClCompile Include="src\Presenter\DosagePresenter.cpp" />
+    <ClCompile Include="src\Presenter\ListSelectorPresenter.cpp" />
+    <ClCompile Include="src\Presenter\MedicationPresenter.cpp" />
+    <ClCompile Include="src\Presenter\PatientDialogPresenter.cpp" />
+    <ClCompile Include="src\Presenter\PatientInfoPresenter.cpp" />
+    <ClCompile Include="src\Presenter\PrescriptionPresenter.cpp" />
+    <ClCompile Include="src\Presenter\TabInstance.cpp" />
+    <ClCompile Include="src\Presenter\TabPresenter.cpp" />
+    <ClCompile Include="src\Resources.cpp" />
+    <ClCompile Include="src\View\GlobalFunctions.cpp" />
+    <ClCompile Include="src\View\ModalDialogBuilder.cpp" />
+    <ClCompile Include="src\View\Models\MedicationTableModel.cpp" />
+    <ClCompile Include="src\View\Models\PatientTableModel.cpp" />
+    <ClCompile Include="src\View\Models\PrescriptionTableModel.cpp" />
+    <ClCompile Include="src\View\Models\SpecialtyTableModel.cpp" />
+    <ClCompile Include="src\View\SubWidgets\PatientTileInfo.cpp" />
+    <ClCompile Include="src\View\SubWidgets\TabTitle.cpp" />
+    <ClCompile Include="src\View\Theme.cpp" />
+    <ClCompile Include="src\View\uiComponents\AutoCompleteLineEdit.cpp" />
+    <ClCompile Include="src\View\uiComponents\ComboBox.cpp" />
+    <ClCompile Include="src\View\uiComponents\customdateedit.cpp" />
+    <ClCompile Include="src\View\uiComponents\DateEdit.cpp" />
+    <ClCompile Include="src\View\uiComponents\HalfRoundedButton.cpp" />
+    <ClCompile Include="src\View\uiComponents\HoverButton.cpp" />
+    <ClCompile Include="src\View\uiComponents\IconButton.cpp" />
+    <ClCompile Include="src\View\uiComponents\LineEdit.cpp" />
+    <ClCompile Include="src\View\uiComponents\ListTable.cpp" />
+    <ClCompile Include="src\View\uiComponents\NameEdit.cpp" />
+    <ClCompile Include="src\View\uiComponents\PixmapLabel.cpp" />
+    <ClCompile Include="src\View\uiComponents\ProcedureTable.cpp" />
+    <ClCompile Include="src\View\uiComponents\SpinBox.cpp" />
+    <ClCompile Include="src\View\uiComponents\TextEdit.cpp" />
+    <ClCompile Include="src\View\uiComponents\TileButton.cpp" />
+    <ClCompile Include="src\View\uiComponents\UserButton.cpp" />
+    <ClCompile Include="src\View\Widgets\SelectorDialog.cpp" />
+    <ClCompile Include="src\View\Widgets\DoctorSettingsDialog.cpp" />
+    <ClCompile Include="src\View\Widgets\DosageDialog.cpp" />
+    <ClCompile Include="src\View\Widgets\InputDialog.cpp" />
+    <ClCompile Include="src\View\Widgets\MedicationDialog.cpp" />
+    <ClCompile Include="src\View\Widgets\PatientFormDialog.cpp" />
+    <ClCompile Include="src\View\Widgets\PinPromptDialog.cpp" />
+    <ClCompile Include="src\View\Widgets\PrescriptionView.cpp" />
+    <ClCompile Include="src\View\Widgets\SaveDialog.cpp" />
+    <ClCompile Include="src\View\Widgets\SpecialtyDialog.cpp" />
+    <ClCompile Include="src\View\Widgets\TabView.cpp" />
+    <ClCompile Include="src\View\Widgets\UpdateDialog.cpp" />
+    <ClCompile Include="src\View\Widgets\UpdateDownloader.cpp" />
+    <QtMoc Include="src\View\Widgets\OpenPrescription.h" />
+    <ClCompile Include="include\JsonCpp\jsoncpp.cpp" />
+    <ClCompile Include="include\sqLite3\shell.c" />
+    <ClCompile Include="include\sqLite3\sqlite3.c" />
+    <ClCompile Include="include\TinyXML\tinystr.cpp" />
+    <ClCompile Include="include\TinyXML\tinyxml.cpp" />
+    <ClCompile Include="include\TinyXML\tinyxmlerror.cpp" />
+    <ClCompile Include="include\TinyXML\tinyxmlparser.cpp" />
+    <ClCompile Include="src\Database\Database.cpp" />
+    <ClCompile Include="src\Database\DbListOpener.cpp" />
+    <ClCompile Include="src\Database\DbPatient.cpp" />
+    <ClCompile Include="src\Database\DbPrescription.cpp" />
+    <ClCompile Include="src\Presenter\MainPresenter.cpp" />
+    <ClCompile Include="src\View\Interfaces\AbstractDateEdit.cpp" />
+    <ClCompile Include="src\View\Interfaces\AbstractLineEdit.cpp" />
+    <ClCompile Include="src\View\Interfaces\AbstractUIElement.cpp" />
+    <ClCompile Include="src\View\Interfaces\ITabView.cpp" />
+    <ClCompile Include="src\View\Widgets\OpenPrescription.cpp" />
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\JsonCpp\json-forwards.h" />
+    <ClInclude Include="include\JsonCpp\json.h" />
+    <ClInclude Include="include\sqLite3\sqlite3.h" />
+    <ClInclude Include="include\sqLite3\sqlite3ext.h" />
+    <ClInclude Include="include\TinyXML\tinystr.h" />
+    <ClInclude Include="include\TinyXML\tinyxml.h" />
+    <ClInclude Include="src\Database\Database.h" />
+    <ClInclude Include="src\Database\DbListOpener.h" />
+    <ClInclude Include="src\Database\DbPatient.h" />
+    <ClInclude Include="src\Database\DbPrescription.h" />
+    <ClInclude Include="src\Database\DbUpdateStatus.h" />
+    <ClInclude Include="src\Database\DbDoctor.h" />
+    <ClInclude Include="src\Model\Date.h" />
+    <ClInclude Include="src\Model\DynamicNum.h" />
+    <ClInclude Include="src\Model\Ekatte.h" />
+    <ClInclude Include="src\Model\FreeFunctions.h" />
+    <ClInclude Include="src\Model\Parser.h" />
+    <ClInclude Include="src\Model\Patient.h" />
+    <ClInclude Include="src\Model\Prescription\Dispensation.h" />
+    <ClInclude Include="src\Model\Prescription\Dosage.h" />
+    <ClInclude Include="src\Model\Prescription\DoseQuantity.h" />
+    <ClInclude Include="src\Model\Prescription\Medication.h" />
+    <ClInclude Include="src\Model\Prescription\Prescription.h" />
+    <ClInclude Include="src\Model\Prescription\Route.h" />
+    <ClInclude Include="src\Model\Prescription\TimeLapse.h" />
+    <ClInclude Include="src\Model\Prescription\WhenToTake.h" />
+    <ClInclude Include="src\Model\Specialty.h" />
+    <ClInclude Include="src\Model\TableRows.h" />
+    <ClInclude Include="src\Model\User.h" />
+    <ClInclude Include="src\Model\Doctor.h" />
+    <ClInclude Include="src\Model\Validators\AbstractValidator.h" />
+    <ClInclude Include="src\Model\Validators\CommonValidators.h" />
+    <ClInclude Include="src\Model\Validators\DateValidator.h" />
+    <ClInclude Include="src\Model\Validators\LpkValidator.h" />
+    <ClInclude Include="src\Model\Validators\NameValidator.h" />
+    <ClInclude Include="src\Model\Validators\PatientValidators.h" />
+    <ClInclude Include="src\Model\Validators\PrescriptionValidators.h" />
+    <ClInclude Include="src\Model\Validators\RziValidaor.h" />
+    <ClInclude Include="src\Network\AbstractReplyHandler.h" />
+    <ClInclude Include="src\Network\Base64Convert.h" />
+    <ClInclude Include="src\Network\DynamicNumenclatures.h" />
+    <ClInclude Include="src\Network\HIS\EPrescription.h" />
+    <ClInclude Include="src\Network\HIS\GetNumenclature.h" />
+    <ClInclude Include="src\Network\HIS\HisService.h" />
+    <ClInclude Include="src\Network\HIS\HisToken.h" />
+    <ClInclude Include="src\Network\HIS\UpdateMedications.h" />
+    <ClInclude Include="src\Network\NetworkManager.h" />
+    <ClInclude Include="src\Network\PKCS11.h" />
+    <ClInclude Include="src\Network\UpdateService\UpdateService.h" />
+    <ClInclude Include="src\Network\XmlSigner.h" />
+    <ClInclude Include="src\Path.h" />
+    <ClInclude Include="src\Presenter\DoctorDialogPresenter.h" />
+    <ClInclude Include="src\Presenter\DosagePresenter.h" />
+    <ClInclude Include="src\Presenter\ListSelectorPresenter.h" />
+    <ClInclude Include="src\Presenter\MainPresenter.h" />
+    <ClInclude Include="src\Presenter\MedicationPresenter.h" />
+    <ClInclude Include="src\Presenter\PatientDialogPresenter.h" />
+    <ClInclude Include="src\Presenter\PatientInfoPresenter.h" />
+    <ClInclude Include="src\Presenter\PrescriptionPresenter.h" />
+    <ClInclude Include="src\Presenter\TabInstance.h" />
+    <ClInclude Include="src\Presenter\TabPresenter.h" />
+    <ClInclude Include="src\Resources.h" />
+    <ClInclude Include="src\View\GlobalFunctions.h" />
+    <ClInclude Include="src\View\Interfaces\AbstractComboBox.h" />
+    <ClInclude Include="src\View\Interfaces\AbstractDateEdit.h" />
+    <ClInclude Include="src\View\Interfaces\AbstractLabel.h" />
+    <ClInclude Include="src\View\Interfaces\AbstractLineEdit.h" />
+    <ClInclude Include="src\View\Interfaces\AbstractRangeEdit.h" />
+    <ClInclude Include="src\View\Interfaces\AbstractSpinBox.h" />
+    <ClInclude Include="src\View\Interfaces\AbstractUIElement.h" />
+    <ClInclude Include="src\View\Interfaces\IDoctorSettingsDialog.h" />
+    <ClInclude Include="src\View\Interfaces\IDosageDialog.h" />
+    <ClInclude Include="src\View\Interfaces\IListSelectorView.h" />
+    <ClInclude Include="src\View\Interfaces\IMainView.h" />
+    <ClInclude Include="src\View\Interfaces\IMedicationDialog.h" />
+    <ClInclude Include="src\View\Interfaces\IPatientDialog.h" />
+    <ClInclude Include="src\View\Interfaces\IPatientTileInfo.h" />
+    <ClInclude Include="src\View\Interfaces\IPrescriptionView.h" />
+    <ClInclude Include="src\View\Interfaces\ITabView.h" />
+    <ClInclude Include="src\View\ModalDialogBuilder.h" />
+    <QtMoc Include="src\View\Widgets\SpecialtyDialog.h" />
+    <QtMoc Include="src\View\Widgets\DoctorSettingsDialog.h" />
+    <QtMoc Include="src\View\SubWidgets\PatientTileInfo.h" />
+    <QtMoc Include="src\View\SubWidgets\TabTitle.h" />
+    <QtMoc Include="src\View\Models\PatientTableModel.h" />
+    <ClInclude Include="src\View\Models\MedicationTableModel.h" />
+    <QtMoc Include="src\View\Models\PrescriptionTableModel.h" />
+    <QtMoc Include="src\View\Models\SpecialtyTableModel.h" />
+    <ClInclude Include="src\View\Theme.h" />
+    <ClInclude Include="src\View\uiComponents\AutoCompleteLineEdit.h" />
+    <ClInclude Include="src\View\uiComponents\MouseWheelGuard.h" />
+    <ClInclude Include="src\View\uiComponents\TileButton.h" />
+    <QtMoc Include="src\View\uiComponents\UserButton.h" />
+    <QtMoc Include="src\View\uiComponents\TextEdit.h" />
+    <QtMoc Include="src\View\uiComponents\SpinBox.h" />
+    <QtMoc Include="src\View\uiComponents\ProcedureTable.h" />
+    <QtMoc Include="src\View\uiComponents\PixmapLabel.h" />
+    <QtMoc Include="src\View\uiComponents\NameEdit.h" />
+    <QtMoc Include="src\View\uiComponents\ListTable.h" />
+    <QtMoc Include="src\View\uiComponents\LineEdit.h" />
+    <QtMoc Include="src\View\uiComponents\IconButton.h" />
+    <QtMoc Include="src\View\uiComponents\HoverButton.h" />
+    <QtMoc Include="src\View\uiComponents\HalfRoundedButton.h" />
+    <QtMoc Include="src\View\uiComponents\DateEdit.h" />
+    <QtMoc Include="src\View\uiComponents\customdateedit.h" />
+    <QtMoc Include="src\View\uiComponents\ComboBox.h" />
+    <QtMoc Include="src\View\Widgets\SelectorDialog.h" />
+    <QtMoc Include="src\View\Widgets\DosageDialog.h" />
+    <QtMoc Include="src\View\Widgets\InputDialog.h" />
+    <QtMoc Include="src\View\Widgets\MedicationDialog.h" />
+    <QtMoc Include="src\View\Widgets\UpdateDownloader.h" />
+    <QtMoc Include="src\View\Widgets\UpdateDialog.h" />
+    <QtMoc Include="src\View\Widgets\TabView.h" />
+    <QtMoc Include="src\View\Widgets\SaveDialog.h" />
+    <QtMoc Include="src\View\Widgets\PrescriptionView.h" />
+    <QtMoc Include="src\View\Widgets\PinPromptDialog.h" />
+    <QtMoc Include="src\View\Widgets\PatientFormDialog.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="src\View\SubWidgets\PatientTileInfo.ui" />
+    <QtUic Include="src\View\SubWidgets\TabTitle.ui" />
+    <QtUic Include="src\View\Widgets\SelectorDialog.ui" />
+    <QtUic Include="src\View\Widgets\DoctorSettingsDialog.ui" />
+    <QtUic Include="src\View\Widgets\DosageDialog.ui" />
+    <QtUic Include="src\View\Widgets\InputDialog.ui" />
+    <QtUic Include="src\View\Widgets\MedicationDialog.ui" />
+    <QtUic Include="src\View\Widgets\OpenPrescription.ui" />
+    <QtUic Include="src\View\Widgets\PatientFormDialog.ui" />
+    <QtUic Include="src\View\Widgets\PinPromptDialog.ui" />
+    <QtUic Include="src\View\Widgets\PrescriptionView.ui" />
+    <QtUic Include="src\View\Widgets\SpecialtyDialog.ui" />
+    <QtUic Include="src\View\Widgets\TabView.ui" />
+    <QtUic Include="src\View\Widgets\UpdateDialog.ui" />
+    <QtUic Include="src\View\Widgets\UpdateDownloader.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="resources\Resource.qrc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

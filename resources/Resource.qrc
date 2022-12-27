@@ -1,0 +1,38 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icon_save.png</file>
+        <file>icon_settings.png</file>
+        <file>icon_user.png</file>
+        <file>icon_open.png</file>
+        <file>icon_torque.png</file>
+        <file>icon_add.png</file>
+        <file>icon_edit.png</file>
+        <file>icon_remove.png</file>
+        <file>icon_apply.png</file>
+        <file>nextMonth.png</file>
+        <file>nextYear.png</file>
+        <file>prevMonth.png</file>
+        <file>prevYear.png</file>
+        <file>icon_downArrow.png</file>
+        <file>icon_prescr.png</file>
+        <file>icon_his.png</file>
+    </qresource>
+    <qresource prefix="/fonts">
+        <file>font_RobotoCondensedRegular.ttf</file>
+    </qresource>
+    <qresource prefix="/json">
+        <file>json_ekatte.json</file>
+        <file>json_medicationForms.json</file>
+        <file>json_dose.json</file>
+        <file>json_route.json</file>
+        <file>json_when.json</file>
+        <file>json_specialty.json</file>
+    </qresource>
+    <qresource prefix="/style">
+        <file>dateEditStyle.qss</file>
+        <file>json_medicationForms.json</file>
+    </qresource>
+    <qresource prefix="/db">
+        <file>dbSchema.txt</file>
+    </qresource>
+</RCC>
