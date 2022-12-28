@@ -24,20 +24,20 @@ SpecialtyDialog::SpecialtyDialog(const QString& name, QWidget* parent) :
 
 	ui.tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
-	connect(ui.tableView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, [=] {
-
-		m_selectedRow = ui.tableView->selectionModel()->currentIndex().row();
-
-		});
 
 	connect(ui.searchEdit, &QLineEdit::textChanged, [=](const QString& text)
 		{
 			m_proxyModel.setFilterRegularExpression(QRegularExpression(text, QRegularExpression::CaseInsensitiveOption));
-	ui.tableView->selectRow(m_selectedRow);
+			ui.tableView->selectRow(m_selectedRow);
 		});
 
 	connect(ui.cancelButton, &QPushButton::clicked, [=] { reject(); });
-	connect(ui.okButton, &QPushButton::clicked, [=] { if (m_selectedRow > -1) accept(); });
+	connect(ui.okButton, &QPushButton::clicked, [=] { 
+
+		m_selectedRow = ui.tableView->selectionModel()->currentIndex().row();
+		if (m_selectedRow > -1) accept(); 
+		
+	});
 	connect(ui.tableView, &QTableView::doubleClicked, [=] { ui.okButton->click(); });
 
 	setWindowTitle("Избор на специалност");
@@ -50,10 +50,11 @@ std::string SpecialtyDialog::getResult()
 {
 	if(result() == QDialog::Rejected) return {};
 
-	return ui.tableView->model()->data(
-		ui.tableView->model()->index(m_selectedRow, 1)
-	)
-	.toString().toStdString();
+	return ui.tableView->model()->index(m_selectedRow, 1)
+		.data()
+		.toString()
+		.toStdString();
+
 	
 }
 
