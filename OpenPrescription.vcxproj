@@ -215,6 +215,7 @@
     <ClInclude Include="include\sqLite3\sqlite3ext.h" />
     <ClInclude Include="include\TinyXML\tinystr.h" />
     <ClInclude Include="include\TinyXML\tinyxml.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\Database\Database.h" />
     <ClInclude Include="src\Database\DbListOpener.h" />
     <ClInclude Include="src\Database\DbPatient.h" />
@@ -346,6 +347,14 @@
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="resources\Resource.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="OpenPrescription.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
+    <Image Include="resources\icon_prescr.ico" />
+    <Image Include="resources\icon_prescr.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
