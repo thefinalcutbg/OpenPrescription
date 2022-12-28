@@ -6,7 +6,7 @@
 #include <QFileDialog>
 #include <QFontDatabase>
 #include "View/Theme.h"
-
+#include "AboutDialog.h"
 QColor blue(133, 207, 234);
 
 OpenPrescription::OpenPrescription(QWidget* parent)
@@ -17,7 +17,7 @@ OpenPrescription::OpenPrescription(QWidget* parent)
    // ui.perscrButton->setIcon(QIcon(":/icons/icon_prescr.png"));
    // ui.saveButton->setIcon(QIcon(":/icons/icon_save.png"));
    // ui.openButton->setIcon(QIcon(":/icons/icon_open.png"));
-
+    ui.aboutButton->setIcon(QIcon(":/icons/icon_question.png"));
     ui.perscrButton->setPosition(HalfRoundedButton::Position::Alone);
     ui.openButton->setPosition(HalfRoundedButton::Position::Alone);
     ui.userButton->setPosition(HalfRoundedButton::Position::Alone);
@@ -26,7 +26,7 @@ OpenPrescription::OpenPrescription(QWidget* parent)
     connect(ui.openButton, &QPushButton::clicked, [&] {presenter.showListSelector(); });
     connect(ui.perscrButton, &QPushButton::clicked, [&] { presenter.newPerscriptionPressed(); });
     connect(ui.userButton, &QPushButton::clicked, [&] { presenter.editDoctor(); });
-
+    connect(ui.aboutButton, &QPushButton::clicked, [&] { AboutDialog d; d.exec(); });
 /*
     setStyleSheet(
         "QMenu{"

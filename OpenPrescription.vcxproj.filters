@@ -125,6 +125,9 @@
     <QtMoc Include="src\View\Widgets\SpecialtyDialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="src\View\Widgets\AboutDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -425,6 +428,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Network\UpdateService\UpdateService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\View\Widgets\AboutDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -732,6 +738,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="src\View\Widgets\SpecialtyDialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="src\View\Widgets\AboutDialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
