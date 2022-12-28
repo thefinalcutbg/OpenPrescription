@@ -61,20 +61,20 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);$(SolutionDir)\include;$(SolutionDir)\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);C:\Dev\ThirdParty\include;$(SolutionDir)\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Dev\OpenPrescription\dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Dev\ThirdParty\dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libcrypto.lib;libp11.lib;libssl.lib;libxml2.lib;libxmlsec.lib;libxmlsec-openssl.lib;pkcs11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);$(SolutionDir)\include;$(SolutionDir)\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);C:\Dev\ThirdParty\include;$(SolutionDir)\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Dev\OpenPrescription\dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Dev\ThirdParty\dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libcrypto.lib;libp11.lib;libssl.lib;libxml2.lib;libxmlsec.lib;libxmlsec-openssl.lib;pkcs11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -105,6 +105,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\ThirdParty\include\JsonCpp\jsoncpp.cpp" />
+    <ClCompile Include="..\ThirdParty\include\sqLite3\shell.c" />
+    <ClCompile Include="..\ThirdParty\include\sqLite3\sqlite3.c" />
+    <ClCompile Include="..\ThirdParty\include\TinyXML\tinystr.cpp" />
+    <ClCompile Include="..\ThirdParty\include\TinyXML\tinyxml.cpp" />
+    <ClCompile Include="..\ThirdParty\include\TinyXML\tinyxmlerror.cpp" />
+    <ClCompile Include="..\ThirdParty\include\TinyXML\tinyxmlparser.cpp" />
     <ClCompile Include="src\Database\DbUpdateStatus.cpp" />
     <ClCompile Include="src\Database\DbDoctor.cpp" />
     <ClCompile Include="src\Model\Date.cpp" />
@@ -190,13 +197,6 @@
     <ClCompile Include="src\View\Widgets\UpdateDialog.cpp" />
     <ClCompile Include="src\View\Widgets\UpdateDownloader.cpp" />
     <QtMoc Include="src\View\Widgets\OpenPrescription.h" />
-    <ClCompile Include="include\JsonCpp\jsoncpp.cpp" />
-    <ClCompile Include="include\sqLite3\shell.c" />
-    <ClCompile Include="include\sqLite3\sqlite3.c" />
-    <ClCompile Include="include\TinyXML\tinystr.cpp" />
-    <ClCompile Include="include\TinyXML\tinyxml.cpp" />
-    <ClCompile Include="include\TinyXML\tinyxmlerror.cpp" />
-    <ClCompile Include="include\TinyXML\tinyxmlparser.cpp" />
     <ClCompile Include="src\Database\Database.cpp" />
     <ClCompile Include="src\Database\DbListOpener.cpp" />
     <ClCompile Include="src\Database\DbPatient.cpp" />
@@ -210,12 +210,12 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\JsonCpp\json-forwards.h" />
-    <ClInclude Include="include\JsonCpp\json.h" />
-    <ClInclude Include="include\sqLite3\sqlite3.h" />
-    <ClInclude Include="include\sqLite3\sqlite3ext.h" />
-    <ClInclude Include="include\TinyXML\tinystr.h" />
-    <ClInclude Include="include\TinyXML\tinyxml.h" />
+    <ClInclude Include="..\ThirdParty\include\JsonCpp\json-forwards.h" />
+    <ClInclude Include="..\ThirdParty\include\JsonCpp\json.h" />
+    <ClInclude Include="..\ThirdParty\include\sqLite3\sqlite3.h" />
+    <ClInclude Include="..\ThirdParty\include\sqLite3\sqlite3ext.h" />
+    <ClInclude Include="..\ThirdParty\include\TinyXML\tinystr.h" />
+    <ClInclude Include="..\ThirdParty\include\TinyXML\tinyxml.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\Database\Database.h" />
     <ClInclude Include="src\Database\DbListOpener.h" />

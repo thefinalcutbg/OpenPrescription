@@ -160,13 +160,7 @@
     <ClCompile Include="src\Database\DbPrescription.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="include\sqLite3\shell.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="include\sqLite3\sqlite3.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\TinyXML\tinystr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="include\TinyXML\tinyxml.cpp">
@@ -433,6 +427,27 @@
     <ClCompile Include="src\View\Widgets\AboutDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\ThirdParty\include\JsonCpp\jsoncpp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\include\sqLite3\shell.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\include\sqLite3\sqlite3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\include\TinyXML\tinystr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\include\TinyXML\tinyxml.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\include\TinyXML\tinyxmlerror.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\include\TinyXML\tinyxmlparser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Presenter\MainPresenter.h">
@@ -499,9 +514,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TinyXML\tinyxml.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\JsonCpp\json.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\JsonCpp\json-forwards.h">
@@ -691,6 +703,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\include\JsonCpp\json.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\include\JsonCpp\json-forwards.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\include\sqLite3\sqlite3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\include\sqLite3\sqlite3ext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\include\TinyXML\tinystr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\include\TinyXML\tinyxml.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
