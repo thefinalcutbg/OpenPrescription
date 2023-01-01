@@ -6,7 +6,7 @@ Add the src folder to your IDE of choice. Be sure to have Qt6 installed and inte
 
 ### SqLite3, TinyXML and JsonCpp
 
-Download the sources of the libraries from their respective github repos and include them in your project. When manipulating the database, OpenPrescription assumes sqlite3 is compiled always-on foreign key constraints, so you have to make that change in the sqlite3 header.
+Download the sources of the libraries from their respective github repos and include them in your project. When manipulating the database, OpenPrescription assumes sqlite3 is compiled with "always-on" foreign key constraints, so you have to make that change in the sqlite3 header.
 
 ### OpenSsl
 
