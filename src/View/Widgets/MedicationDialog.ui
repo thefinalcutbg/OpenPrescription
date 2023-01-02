@@ -44,7 +44,7 @@
    <item>
     <widget class="QLabel" name="formLabel">
      <property name="text">
-      <string>                                                                   (наименованията са на латиница)</string>
+      <string>                                                         (наименованията са на латиница)</string>
      </property>
     </widget>
    </item>
