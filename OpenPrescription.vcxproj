@@ -355,7 +355,6 @@
     <ResourceCompile Include="OpenPrescription.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="icon1.ico" />
     <Image Include="resources\icon_prescr.ico" />
     <Image Include="resources\icon_prescr.png" />
   </ItemGroup>

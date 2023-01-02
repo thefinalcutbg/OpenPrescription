@@ -758,9 +758,6 @@
     <Image Include="resources\icon_prescr.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="icon1.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="resources\icon_prescr.ico">
       <Filter>Resource Files</Filter>
     </Image>
