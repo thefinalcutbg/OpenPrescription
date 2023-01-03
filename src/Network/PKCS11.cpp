@@ -9,6 +9,7 @@
 PKCS11_CTX* ctx{ nullptr };
 
 std::vector<std::string> modules{
+	"cmP1164.dll",
 	"bit4xpki.dll",
 	"IDPrimePKCS1164.dll"
 };
