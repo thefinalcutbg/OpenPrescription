@@ -14,21 +14,18 @@ bool NameValidator::validateInput(const std::string& text)
         _errorMsg = &mustBeInCyrillic;
         return false;
     }
-
-    //    if (text.length() == 1) not working with cyrillic characters!
-    //    {
-    //        _errorMsg = &invalidName;
-    //        return false;
-    //    }
-
-    for (char c : text)
-    {
-        if (c != ' ' && c != '-')
-        {
-            return true;
-        }
-    }
-
+    
+    /*
     _errorMsg = &invalidName;
-    return false;
+    
+    auto& firstCharacter = text[0];
+
+        if (firstCharacter == ' ' || firstCharacter == '-')
+        {
+            return false;
+        }
+
+    */
+
+    return true;;
 };

@@ -13,7 +13,7 @@ bool NotEmptyValidator::validateInput(const std::string& text)
 }
 
 const std::string CyrillicValidator::mustBeCyrillic{ "Пишете на кирилица, ако обичате!" };
-static std::string_view allowed = ("абвгдежзийклмнопрстуфхцчшщъьюя-АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЮЯ ");
+static std::string_view allowed = ("абвгдежзийклмнопрстуфхцчшщъьюя-АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЮЯ_ ");
 
 bool CyrillicValidator::validateInput(const std::string& text)
 {

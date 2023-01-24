@@ -9,9 +9,16 @@
 PKCS11_CTX* ctx{ nullptr };
 
 std::vector<std::string> modules{
-	"cmP1164.dll",
-	"bit4xpki.dll",
-	"IDPrimePKCS1164.dll"
+	//"cmP1164.dll",
+	//"bit4xpki.dll",
+	//"IDPrimePKCS1164.dll"
+	"C:\\Program Files\\SafeNet\\Authentication\\SAC\\x64\\IDPrimePKCS1164.dll",
+	"C:\\Windows\\System32\\bit4ipki.dll",
+	"C:\\Windows\\System32\\cmP11.dll",
+	"C:\\Windows\\System32\\cvP11.dll",
+	"C:\\Windows\\System32\\siecap11.dll",
+	"C:\\Windows\\System32\\cmP1164.dll",
+	"C:\\Windows\\System32\\idprimepkcs11.dll"
 };
 
 
@@ -50,8 +57,6 @@ bool loadModuleWithToken()
 
 		if (testSlot == NULL || testSlot->token == NULL) {
 
-			std::cout << "no valid token" << std::endl;
-
 			PKCS11_release_all_slots(ctx, testSlots, testNSlots);
 			//causes seg fault if no drivers are installed
 			//PKCS11_CTX_unload(ctx);
@@ -65,7 +70,7 @@ bool loadModuleWithToken()
 		if (PKCS11_enumerate_certs(testSlot->token, &testCerts, &testNCerts) || testNCerts <= 0)
 		{
 			PKCS11_release_all_slots(ctx, testSlots, testNSlots);
-			PKCS11_CTX_unload(ctx);
+			//PKCS11_CTX_unload(ctx);
 			continue;
 		}
 

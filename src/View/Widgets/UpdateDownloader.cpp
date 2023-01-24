@@ -60,8 +60,12 @@ UpdateDownloader::UpdateDownloader(const char* url, QWidget* parent)
 
 			output.close();
 
-
 			m_reply->deleteLater();
+
+			ModalDialogBuilder::showMessage(
+				"Натиснете ОК за да стартирате инсталатора. "
+				"\nНе стартирайте програмата по време на инсталация!"
+			);
 
 			QProcess process;
 
