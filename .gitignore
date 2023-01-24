@@ -364,3 +364,5 @@ FodyWeavers.xsd
 /install/files
 /install/compiled
 /cmP1164.dll
+/bit4xpki.dll
+/IDPrimePKCS1164.dll
