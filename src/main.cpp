@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
 #include "Database/DbDoctor.h"
 #include "Presenter/DoctorDialogPresenter.h"
 #include "Path.h"
+#include "DbUpdater.h"
 
 bool initFunction() {
 
@@ -59,7 +60,7 @@ bool initFunction() {
     WhenToTake::initialize();
     Specialty::initialize();
     Db::showErrorDialog(true);
-   // DbUpdater::updateDb();
+    DbUpdater::updateDb();
 
     if (!DbDoctor::hasDoctor())
     {

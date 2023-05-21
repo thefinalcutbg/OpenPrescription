@@ -43,8 +43,8 @@ long long DbPrescription::insert(const Prescription& p)
 
             "INSERT INTO medication ("
             "prescription_rowid, numMed_rowid, is_form, quantity, "
-            "priority, substitution, notes, dosage) "
-            "VALUES (?,?,?,?,?,?,?,?)"
+            "priority, substitution, notes, dosage, from_date, to_date) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?)"
         );
 
         db.bind(1, rowid);
@@ -55,6 +55,17 @@ long long DbPrescription::insert(const Prescription& p)
         db.bind(6, m.substitution);
         db.bind(7, m.note);
         db.bind(8, Parser::write(m.dosage));
+
+        if (m.dosePeriod)
+        {
+            db.bind(9, m.dosePeriod->from.to8601());
+            db.bind(10, m.dosePeriod->to.to8601());
+        }
+        else
+        {
+            db.bindNull(9);
+            db.bindNull(10);
+        }
 
         db.execute();
     }
@@ -81,46 +92,57 @@ Prescription DbPrescription::get(long long rowid)
         "medication.priority,"
         "medication.substitution,"
         "medication.notes,"
-        "medication.dosage "
+        "medication.dosage, "
+        "medication.from_date, "
+        "medication.to_date "
 
         "FROM medication LEFT JOIN prescription ON "
         "medication.prescription_rowid = prescription.rowid "
         "WHERE medication.prescription_rowid = " + std::to_string(rowid);
 
-    Db db(query);
+     Db db(query);
 
-    Prescription p;
+     Prescription p;
 
-    bool prescriptionSet{ false };
+     bool prescriptionSet{ false };
 
-    while (db.hasRows())
-    {
-        if (!prescriptionSet)
-        {
-            p.rowid = db.asRowId(0);
-            p.patient_rowid = db.asRowId(1);
-            p.LRN = db.asString(2);
-            p.NRN = db.asString(3);
-            p.date = db.asString(4);
-            p.dispensation.type = static_cast<Dispensation::Type>(db.asInt(5));
-            p.dispensation.repeats = db.asInt(6);
-            p.supplements = db.asString(7);
+     while(db.hasRows())
+     {
+         if (!prescriptionSet)
+         {
+             p.rowid = db.asRowId(0);
+             p.patient_rowid = db.asRowId(1);
+             p.LRN = db.asString(2);
+             p.NRN = db.asString(3);
+             p.date = db.asString(4);
+             p.dispensation.type = static_cast<Dispensation::Type>(db.asInt(5));
+             p.dispensation.repeats = db.asInt(6);
+             p.supplements = db.asString(7);
 
-            prescriptionSet = true;
-        }
+             prescriptionSet = true;
+         }
+         
+         p.medicationGroup.emplace_back(db.asInt(8));
 
-        p.medicationGroup.emplace_back(db.asInt(8));
+         auto& m = p.medicationGroup.back();
+         m.byForm = db.asBool(9);
+         m.quantity = db.asInt(10);
+         m.priority = static_cast<Medication::Priority>(db.asInt(11));
+         m.substitution = db.asBool(12);
+         m.note = db.asString(13);
+         m.dosage = Parser::parseDosage(db.asString(14));
+         
+         std::string fromDate = db.asString(15);
+         if (fromDate.size())
+         {
+             m.dosePeriod = DosePeriod{
+                 .from = fromDate,
+                 .to = db.asString(16),
+             };
+         }
+     }
 
-        auto& m = p.medicationGroup.back();
-        m.byForm = db.asBool(9);
-        m.quantity = db.asInt(10);
-        m.priority = static_cast<Medication::Priority>(db.asInt(11));
-        m.substitution = db.asBool(12);
-        m.note = db.asString(13);
-        m.dosage = Parser::parseDosage(db.asString(14));
-    }
-
-    return p;
+     return p;
 }
 
 bool DbPrescription::update(const Prescription& p)
@@ -154,8 +176,8 @@ bool DbPrescription::update(const Prescription& p)
 
             "INSERT INTO medication ("
             "prescription_rowid, numMed_rowid, is_form, quantity, "
-            "priority, substitution, notes, dosage) "
-            "VALUES (?,?,?,?,?,?,?,?)"
+            "priority, substitution, notes, dosage, from_date, to_date) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?)"
         );
 
         db.bind(1, p.rowid);
@@ -167,9 +189,20 @@ bool DbPrescription::update(const Prescription& p)
         db.bind(7, m.note);
         db.bind(8, Parser::write(m.dosage));
 
+        if (m.dosePeriod)
+        {
+            db.bind(9, m.dosePeriod->from.to8601());
+            db.bind(10, m.dosePeriod->to.to8601());
+        }
+        else
+        {
+            db.bindNull(9);
+            db.bindNull(10);
+        }
+
         success = db.execute();
 
-        if (!success) return false;
+       if (!success) return false;
 
     }
 

@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "OpenPrescription"
-#define MyAppVersion "0.2"
+#define MyAppVersion "0.4"
 #define MyAppPublisher "SalveoSoft"
 #define MyAppURL "https://github.com/thefinalcutbg/OpenPrescription"
 #define MyAppExeName "OpenPrescription.exe"

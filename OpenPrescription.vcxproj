@@ -114,6 +114,7 @@
     <ClCompile Include="..\ThirdParty\include\TinyXML\tinyxmlparser.cpp" />
     <ClCompile Include="src\Database\DbUpdateStatus.cpp" />
     <ClCompile Include="src\Database\DbDoctor.cpp" />
+    <ClCompile Include="src\DbUpdater.cpp" />
     <ClCompile Include="src\Model\Date.cpp" />
     <ClCompile Include="src\Model\Ekatte.cpp" />
     <ClCompile Include="src\Model\FreeFunctions.cpp" />
@@ -223,6 +224,7 @@
     <ClInclude Include="src\Database\DbPrescription.h" />
     <ClInclude Include="src\Database\DbUpdateStatus.h" />
     <ClInclude Include="src\Database\DbDoctor.h" />
+    <ClInclude Include="src\DbUpdater.h" />
     <ClInclude Include="src\Model\Date.h" />
     <ClInclude Include="src\Model\DynamicNum.h" />
     <ClInclude Include="src\Model\Ekatte.h" />

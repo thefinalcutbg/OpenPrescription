@@ -33,6 +33,11 @@ void MedicationPresenter::medicationChanged(const std::string& mediName)
 
 }
 
+void MedicationPresenter::dosePeriodChanged(const std::optional<DosePeriod>& p)
+{
+	m_medication.dosePeriod = p;
+}
+
 void MedicationPresenter::noteChanged(const std::string& note)
 {
 	m_medication.note = note;
@@ -58,9 +63,7 @@ void MedicationPresenter::addDosage()
 std::optional<Medication> MedicationPresenter::openDialog()
 {
 	if (Medication::names().empty()) {
-		ModalDialogBuilder::showMessage(
-			"Не са заредени номенклатурите с лекарствата.\n "
-		"Рестартирайте програмата и се уверете, че имате достъп до интернет.");
+		ModalDialogBuilder::showMessage("Първо заредете номенклатурата за лекарствата от Настройки");
 		return std::optional<Medication>();
 	}
 

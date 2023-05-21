@@ -433,6 +433,9 @@
     <ClCompile Include="..\ThirdParty\include\TinyXML\tinyxmlparser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\DbUpdater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Presenter\MainPresenter.h">
@@ -691,6 +694,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\ThirdParty\include\TinyXML\tinyxml.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DbUpdater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
