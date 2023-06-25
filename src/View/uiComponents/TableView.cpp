@@ -1,4 +1,4 @@
-﻿#include "ProcedureTable.h"
+﻿#include "TableView.h"
 #include "View/Theme.h"
 #include <QHeaderView>
 #include <QScrollBar>
@@ -6,6 +6,9 @@
 #include <QPainterPath>
 #include <QPainter>
 #include <QStyledItemDelegate>
+#include <QMenu>
+
+#include "qdebug.h"
 
 class NoFocusDelegate : public QStyledItemDelegate
 {
@@ -20,7 +23,7 @@ protected:
 
 };
 
-ProcedureTable::ProcedureTable(QWidget* parent)
+TableView::TableView(QWidget* parent)
     : QTableView(parent), header(Qt::Orientation::Horizontal)
 {
     
@@ -40,7 +43,7 @@ ProcedureTable::ProcedureTable(QWidget* parent)
 
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    viewport()->setFocusPolicy(Qt::StrongFocus);
+   // viewport()->setFocusPolicy(Qt::StrongFocus);
     setShowGrid(true);
 
     verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
@@ -49,17 +52,50 @@ ProcedureTable::ProcedureTable(QWidget* parent)
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+    setDragEnabled(true);
+    setAcceptDrops(true);
+    setDragDropMode(QAbstractItemView::DragDrop);
+    setDefaultDropAction(Qt::MoveAction);
+    setDragDropOverwriteMode(false);
+    setDropIndicatorShown(true);
+
     setWordWrap(true);
+
+
+
+    menu = new QMenu(this);
+
+    menu->setStyleSheet(Theme::getPopupMenuStylesheet());
+
+    QAction* action;
+
+    action = (new QAction("Редактирай", menu));
+    connect(action, &QAction::triggered, this, [=] { emit editPressed(selectedRow()); });
+    action->setIcon(QIcon(":/icons/icon_edit.png"));
+    menu->addAction(action);
+    action = (new QAction("Изтрий", menu));
+    connect(action, &QAction::triggered, this, [=] { emit deletePressed(selectedRow()); });
+    action->setIcon(QIcon(":/icons/icon_remove.png"));
+    menu->addAction(action);
+
+    connect(this, &QTableView::doubleClicked, [=] { emit editPressed(selectedRow()); });
+
+    connect(this, &QWidget::customContextMenuRequested, [=](const QPoint& p){
+        if (!isEnabled()) return;
+        if (this->selectedRow() == -1) return;
+        menu->popup(viewport()->mapToGlobal(p));
+
+    });
     
 }
 
-void ProcedureTable::setAmbListLayout()
+void TableView::setAmbListLayout()
 {
     connect(model(), &QAbstractTableModel::dataChanged, [=] { fitToModel();});
     hideColumn(0);
-    setColumnWidth(1, 69);
-    setColumnWidth(2, 280);
-    setColumnWidth(3, 25);
+    setColumnWidth(1, 90);
+    setColumnWidth(2, 260);
+    setColumnWidth(3, 45);
     setColumnWidth(4, 300);
     setColumnWidth(5, 49);
     setColumnWidth(6, 70);
@@ -67,22 +103,21 @@ void ProcedureTable::setAmbListLayout()
     hideColumn(7);
 
     horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+
     setShowGrid(false);
 }
 
-void ProcedureTable::setProcedureHistoryLayout()
+void TableView::setProcedureHistoryLayout()
 {
     connect(model(), &QAbstractTableModel::dataChanged, [=] { fitToModel();});
 
     hideColumn(0);
-   
-    setColumnWidth(1, 69);
+    setColumnWidth(1, 90);
     setColumnWidth(2, 200);
     setColumnWidth(3, 25);
     setColumnWidth(4, 300);
     setColumnWidth(5, 49);
     setColumnWidth(6, 70);
-    //setColumnWidth(7, 69);
     setColumnWidth(7, 140);
     setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -93,7 +128,7 @@ void ProcedureTable::setProcedureHistoryLayout()
     setShowGrid(false);
 }
 
-void ProcedureTable::setProcedurePrintSelectLayout()
+void TableView::setProcedurePrintSelectLayout()
 {
     setFocusPolicy(Qt::NoFocus);
     setColumnWidth(0, 110);
@@ -109,7 +144,7 @@ void ProcedureTable::setProcedurePrintSelectLayout()
     setShowGrid(false);
 }
 
-void ProcedureTable::setBusinessOperationLayout()
+void TableView::setBusinessOperationLayout()
 {
     connect(model(), &QAbstractTableModel::dataChanged, [=] { fitToModel();});
     setColumnWidth(0, 50);
@@ -122,7 +157,7 @@ void ProcedureTable::setBusinessOperationLayout()
     setShowGrid(false);
 }
 
-void ProcedureTable::setMedicationLayot()
+void TableView::setMedicationLayot()
 {
     connect(model(), &QAbstractTableModel::dataChanged, [=] { fitToModel();});
 
@@ -133,7 +168,16 @@ void ProcedureTable::setMedicationLayot()
     setWordWrap(true);
 }
 
-void ProcedureTable::setPISActivitiesLayout()
+void TableView::setStatisticLayout()
+{
+    connect(model(), &QAbstractTableModel::dataChanged, [=] { fitToModel();});
+
+    setColumnWidth(1, 70);
+    horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+    setShowGrid(false);
+}
+
+void TableView::setPISActivitiesLayout()
 {
     connect(model(), &QAbstractTableModel::dataChanged, [=] { fitToModel();});
 
@@ -155,7 +199,7 @@ void ProcedureTable::setPISActivitiesLayout()
     setShowGrid(false);
 }
 
-void ProcedureTable::fitToModel() //not working correctly yet
+void TableView::fitToModel() //not working correctly yet
 {
     auto rows = model()->rowCount();
 
@@ -169,20 +213,25 @@ void ProcedureTable::fitToModel() //not working correctly yet
 
 }
 
-void ProcedureTable::keyPressEvent(QKeyEvent* event)
+void TableView::enableContextMenu(bool enabled)
+{
+    setContextMenuPolicy(enabled ? Qt::CustomContextMenu : Qt::NoContextMenu);
+}
+
+void TableView::keyPressEvent(QKeyEvent* event)
 {
 
     switch (event->key())
     {
     case Qt::Key_Delete:
-        emit deletePressed();
+        emit deletePressed(selectedRow());
         break;
     default:
         QTableView::keyPressEvent(event);
     }
 }
 
-void ProcedureTable::paintEvent(QPaintEvent* e)
+void TableView::paintEvent(QPaintEvent* e)
 {
     constexpr int footerHeight = 10;
 
@@ -280,20 +329,38 @@ void ProcedureTable::paintEvent(QPaintEvent* e)
 
 }
 
-int ProcedureTable::selectedRow()
+Q_INVOKABLE int TableView::selectedRow() const
+{
+    QItemSelectionModel* selection = selectionModel();
+    return selection->hasSelection() ? selection->selectedRows().front().row() : -1;
+}
+
+void TableView::dropEvent(QDropEvent* e)
+{
+    if (e->source() != this || e->dropAction() != Qt::MoveAction)
+        return;
+
+    int dragRow = selectedRow();
+
+    QTableView::dropEvent(e);  // m_dropRow is set by inserted row
+
+    emit rowDragged();
+}
+
+int TableView::selectedRow()
 {
     if (selectionModel() == nullptr) return -1;
 
+   // qDebug() << "Source row:" << selectionModel()->currentIndex().row();
+
     return selectionModel()->currentIndex().row();
-
-
 }
 
-ProcedureTable::~ProcedureTable()
+TableView::~TableView()
 {
 }
 
-void ProcedureHeader::paintEvent(QPaintEvent* e)
+void TableViewHeader::paintEvent(QPaintEvent* e)
 {
     QPainter painter(this->viewport());
 

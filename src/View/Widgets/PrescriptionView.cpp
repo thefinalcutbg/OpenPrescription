@@ -38,8 +38,8 @@ PrescriptionView::PrescriptionView(QWidget* parent)
 
 		});
 
-	connect(ui.medicationTable, &QTableView::doubleClicked, [=] { ui.editButton->click(); });
-	connect(ui.medicationTable, &ProcedureTable::deletePressed, [=] { if (presenter) ui.deleteButton->click(); });
+	connect(ui.medicationTable, &TableView::editPressed, [=](int idx){  if (presenter) presenter->editPressed(idx); });
+	connect(ui.medicationTable, &TableView::deletePressed, [=](int idx) { if (presenter) presenter->deletePressed(idx); });
 	connect(ui.dispensationCombo, &QComboBox::currentIndexChanged, [&] { dispensationLogic(); });
 	connect(ui.repeats, &QSpinBox::valueChanged, [&] { if (ui.repeats->isHidden()) return; dispensationLogic(); });
 	connect(ui.supplementsEdit, &QLineEdit::textChanged, [=](const QString& text) {if (presenter) presenter->supplementsChanged(text.toStdString());});
@@ -131,6 +131,7 @@ void PrescriptionView::setReadOnly(bool readOnly)
 	ui.dispensationCombo->setDisabled(readOnly);
 	ui.repeats->setReadOnly(readOnly);
 	ui.supplementsEdit->setReadOnly(readOnly);
+	ui.medicationTable->enableContextMenu(!readOnly);
 
 }
 

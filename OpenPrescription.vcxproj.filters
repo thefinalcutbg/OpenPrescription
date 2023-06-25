@@ -92,9 +92,6 @@
     <QtMoc Include="src\View\uiComponents\PixmapLabel.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="src\View\uiComponents\ProcedureTable.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="src\View\uiComponents\SpinBox.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -126,6 +123,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="src\View\Widgets\AboutDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\View\uiComponents\TableView.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -346,9 +346,6 @@
     <ClCompile Include="src\View\uiComponents\PixmapLabel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\View\uiComponents\ProcedureTable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\View\uiComponents\SpinBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -434,6 +431,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DbUpdater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\View\uiComponents\TableView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
