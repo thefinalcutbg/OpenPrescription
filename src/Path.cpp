@@ -18,7 +18,7 @@ namespace PrvPath
         if (!cfg.exists()) {
             
             cfg.open(QIODevice::ReadWrite);
-            cfg.write(dataFolder.filePath("prescr.odb").toUtf8());
+            cfg.write(dataFolder.filePath("prescr.db").toUtf8());
             cfg.close();
 
 
@@ -75,7 +75,7 @@ std::string Path::setDbPath()
     auto str = QFileDialog::getOpenFileName(
         nullptr, 
         "Изберете местонахождение на бaзата данни", 
-        getDbPath().c_str(), "Файл база данни (*.odb)"
+        getDbPath().c_str(), "Файл база данни (*.db)"
     );
 
     if (str.isEmpty()) return std::string();

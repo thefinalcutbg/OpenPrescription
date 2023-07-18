@@ -9,15 +9,12 @@
 PKCS11_CTX* ctx{ nullptr };
 
 std::vector<std::string> modules{
-	//"cmP1164.dll",
-	//"bit4xpki.dll",
-	//"IDPrimePKCS1164.dll"
 	"C:\\Program Files\\SafeNet\\Authentication\\SAC\\x64\\IDPrimePKCS1164.dll",
+	"C:\\Windows\\System32\\cmP1164.dll",
 	"C:\\Windows\\System32\\bit4ipki.dll",
 	"C:\\Windows\\System32\\cmP11.dll",
 	"C:\\Windows\\System32\\cvP11.dll",
 	"C:\\Windows\\System32\\siecap11.dll",
-	"C:\\Windows\\System32\\cmP1164.dll",
 	"C:\\Windows\\System32\\idprimepkcs11.dll"
 };
 
@@ -107,9 +104,11 @@ PKCS11::PKCS11()
 
 	PKCS11_enumerate_certs(m_slot->token, &certs, &ncerts);
 
-	m_certificate = &certs[0];
+	if (!ncerts) return;
 
-	if (!m_certificate || ncerts <= 0) {
+	m_certificate = &certs[ncerts-1];
+
+	if (!m_certificate) {
 		
 		return;
 	}
