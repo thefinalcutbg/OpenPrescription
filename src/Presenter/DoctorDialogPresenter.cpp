@@ -13,11 +13,10 @@ DoctorDialogPresenter::DoctorDialogPresenter(const Doctor& doctor) :
 
 void DoctorDialogPresenter::okPressed()
 {
-    AbstractLineEdit* lineCheck[6]
+    AbstractLineEdit* lineCheck[5]
     {
         view->lineEdit(DoctorFields::LPK),
         view->lineEdit(DoctorFields::RZI),
-        view->lineEdit(DoctorFields::EGN),
         view->lineEdit(DoctorFields::FirstName),
         view->lineEdit(DoctorFields::LastName),
         view->lineEdit(DoctorFields::Phone),
@@ -53,7 +52,6 @@ void DoctorDialogPresenter::setView(IDoctorSettingsDialog* view)
 {
     this->view = view;
 
-    view->lineEdit(DoctorFields::EGN)->setInputValidator(&egn_validator);
     view->lineEdit(DoctorFields::FirstName)->setInputValidator(&name_validator);
     view->lineEdit(DoctorFields::LastName)->setInputValidator(&name_validator);
     view->lineEdit(DoctorFields::LPK)->setInputValidator(&lpk_validator);

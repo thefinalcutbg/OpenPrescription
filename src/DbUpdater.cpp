@@ -1,5 +1,6 @@
 #include "DbUpdater.h"
 #include "Database/Database.h"
+
 namespace DbMigrations {	
 
 	void migrateTo1() {
@@ -12,9 +13,21 @@ namespace DbMigrations {
 		db.execute("ALTER TABLE medication ADD to_date TEXT");
 		db.execute("PRAGMA user_version = 1");
 	}
+
+	void migrateTo2() {
+
+		if (Db::version() != 1) return;
+
+		Db db;
+
+		db.execute("PRAGMA foreign_keys=OFF");
+		db.execute("ALTER TABLE doctor DROP COLUMN egn");
+		db.execute("PRAGMA user_version = 2");
+	}
 };
 
 void DbUpdater::updateDb()
 {
 	DbMigrations::migrateTo1();
+	DbMigrations::migrateTo2();
 }

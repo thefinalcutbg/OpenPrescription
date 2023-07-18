@@ -13,7 +13,6 @@ class DoctorDialogPresenter
 
 	std::optional<Doctor> result;
 
-	EgnValidator egn_validator;
 	NameValidator name_validator;
 	LpkValidator lpk_validator;
 	NotEmptyValidator not_emptyValidator;

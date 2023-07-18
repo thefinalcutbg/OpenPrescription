@@ -19,7 +19,6 @@ DoctorSettingsDialog::DoctorSettingsDialog(DoctorDialogPresenter* presenter, QWi
 	setWindowIcon(QIcon{ ":/icons/icon_user.png" });
 
 	lineEdits[DoctorFields::RZI] = ui.rziEdit;
-	lineEdits[DoctorFields::EGN] = ui.egnLineEdit;
 	lineEdits[DoctorFields::FirstName] = ui.fNameEdit;
 	lineEdits[DoctorFields::LastName] = ui.lNameEdit;
 	lineEdits[DoctorFields::Phone] = ui.phoneEdit;
@@ -53,7 +52,6 @@ DoctorSettingsDialog::DoctorSettingsDialog(DoctorDialogPresenter* presenter, QWi
 void DoctorSettingsDialog::setDoctor(const Doctor& doctor)
 {
 	ui.rziEdit->set_Text(doctor.RZI);
-	ui.egnLineEdit->set_Text(doctor.egn);
 	ui.lpkEdit->set_Text(doctor.LPK);
 	ui.fNameEdit->set_Text(doctor.fname);
 	ui.lNameEdit->set_Text(doctor.lname);
@@ -75,7 +73,6 @@ Doctor DoctorSettingsDialog::getDoctor()
 {
 	Doctor doctor;
 	doctor.RZI = ui.rziEdit->getText();
-	doctor.egn = ui.egnLineEdit->getText();
 	doctor.LPK = ui.lpkEdit->getText();
 	doctor.fname = ui.fNameEdit->getText();
 	doctor.lname = ui.lNameEdit->getText();

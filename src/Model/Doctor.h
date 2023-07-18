@@ -14,7 +14,6 @@ struct Doctor
 	std::string LPK;
 	std::string fname;
 	std::string lname;
-	std::string egn;
 	Specialty specialty;
 	std::string phone;
 

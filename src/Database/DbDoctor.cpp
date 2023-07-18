@@ -6,7 +6,7 @@ Doctor DbDoctor::getDoctor()
     Db db;
 
     db.newStatement(
-        "SELECT rzi, lpk, fname, lname, egn, specialty, phone FROM doctor"
+        "SELECT rzi, lpk, fname, lname, specialty, phone FROM doctor"
     );
 
     while (db.hasRows())
@@ -16,9 +16,8 @@ Doctor DbDoctor::getDoctor()
             .LPK = db.asString(1),
             .fname = db.asString(2),
             .lname = db.asString(3),
-            .egn = db.asString(4),
-            .specialty = db.asInt(5),
-            .phone = db.asString(6)
+            .specialty = db.asInt(4),
+            .phone = db.asString(5)
         };
     }
 
@@ -53,7 +52,6 @@ void DbDoctor::update(const Doctor& d)
         "fname = ?,"
         "lname = ?,"
         "phone = ?,"
-        "egn = ?,"
         "specialty = ?"
 
     );
@@ -63,8 +61,7 @@ void DbDoctor::update(const Doctor& d)
     db.bind(3, d.fname);
     db.bind(4, d.lname);
     db.bind(5, d.phone);
-    db.bind(6, d.egn);
-    db.bind(7, d.specialty.getIdx());
+    db.bind(6, d.specialty.getIdx());
 
     db.execute();
 }
@@ -76,7 +73,7 @@ void DbDoctor::insertDoctor(const Doctor& d)
     db.newStatement(
         "INSERT INTO doctor ("
         "lpk,rzi,fname,lname,phone,egn,specialty) "
-        "VALUES (?,?,?,?,?,?,?)"
+        "VALUES (?,?,?,?,?,?)"
 
     );
 
@@ -85,8 +82,7 @@ void DbDoctor::insertDoctor(const Doctor& d)
     db.bind(3, d.fname);
     db.bind(4, d.lname);
     db.bind(5, d.phone);
-    db.bind(6, d.egn);
-    db.bind(7, d.specialty.getIdx());
+    db.bind(6, d.specialty.getIdx());
 
     db.execute();
 }
