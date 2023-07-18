@@ -3,7 +3,7 @@
 
 #define MyAppName "OpenPrescription"
 #define MyAppVersion "0.5"
-#define MyAppPublisher "SalveoSoft"
+#define MyAppPublisher "SalveoDent"
 #define MyAppURL "https://github.com/thefinalcutbg/OpenPrescription"
 #define MyAppExeName "OpenPrescription.exe"
 
