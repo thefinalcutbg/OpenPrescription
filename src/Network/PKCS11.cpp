@@ -5,7 +5,8 @@
 #include <iostream>
 #include <exception>
 #include <filesystem>
-#include <qdebug.h>
+#include <QSSlCertificate>
+
 PKCS11_CTX* ctx{ nullptr };
 
 std::vector<std::string> modules{
@@ -19,6 +20,57 @@ std::vector<std::string> modules{
 };
 
 
+std::vector<std::string> getModulesList()
+{
+	
+	std::vector<std::string> result;
+
+	for (int i = 0; i < modules.size(); i++)
+	{
+		if (!std::filesystem::exists(modules[i])) continue;
+
+		result.push_back(modules[i].data());
+	}
+
+	return result;
+}
+
+
+
+bool isValidCertificate(PKCS11_cert_st* cert)
+{
+	int length = i2d_X509(cert->x509, 0);
+
+	std::vector<char> vec;
+	vec.resize(length);
+	char* data = vec.data();
+
+	char** dataP = &data;
+	unsigned char** dataPu = (unsigned char**)dataP;
+
+	if (i2d_X509(cert->x509, dataPu) < 0)
+	{
+		return false;
+	}
+
+	std::string certResult = "-----BEGIN CERTIFICATE-----\n";
+
+	certResult.append(Base64Convert::encode(vec.data(), vec.size()));
+
+	certResult.append("\n-----END CERTIFICATE-----");
+
+	QSslCertificate qCert(certResult.data());
+
+	const QDateTime currentTime = QDateTime::currentDateTime();
+
+	return
+		!qCert.isNull() &&
+		currentTime <= qCert.expiryDate() &&
+		currentTime >= qCert.effectiveDate()
+		;
+}
+
+
 bool loadModuleWithToken()
 {
 	if (!ctx) {
@@ -27,15 +79,9 @@ bool loadModuleWithToken()
 
 	bool success = false;
 
-	for (int i = 0; i < modules.size(); i++)
+	for (auto& module : getModulesList())
 	{
-
-		if (!std::filesystem::exists(modules[i]))
-		{
-			continue;
-		}
-
- 		if (PKCS11_CTX_load(ctx, modules[i].data()))
+		if (PKCS11_CTX_load(ctx, module.data()))
 		{
 			PKCS11_CTX_unload(ctx);
 			continue;
@@ -54,6 +100,8 @@ bool loadModuleWithToken()
 
 		if (testSlot == NULL || testSlot->token == NULL) {
 
+			std::cout << "no valid token" << std::endl;
+
 			PKCS11_release_all_slots(ctx, testSlots, testNSlots);
 			//causes seg fault if no drivers are installed
 			//PKCS11_CTX_unload(ctx);
@@ -67,7 +115,7 @@ bool loadModuleWithToken()
 		if (PKCS11_enumerate_certs(testSlot->token, &testCerts, &testNCerts) || testNCerts <= 0)
 		{
 			PKCS11_release_all_slots(ctx, testSlots, testNSlots);
-			//PKCS11_CTX_unload(ctx);
+			PKCS11_CTX_unload(ctx);
 			continue;
 		}
 
@@ -84,12 +132,13 @@ bool loadModuleWithToken()
 
 }
 
+
 PKCS11::PKCS11()
 {
 	if (PKCS11_enumerate_slots(ctx, &m_slots, &nslots) == -1) {
 
 		if (!loadModuleWithToken()) {
-			
+
 			return;
 		}
 
@@ -99,25 +148,31 @@ PKCS11::PKCS11()
 
 	m_slot = PKCS11_find_token(ctx, m_slots, nslots);
 
-	if (m_slot == nullptr)
-		return;
+	if (m_slot == nullptr) return;
 
 	PKCS11_enumerate_certs(m_slot->token, &certs, &ncerts);
 
-	if (!ncerts) return;
-
-	m_certificate = &certs[ncerts-1];
-
-	if (!m_certificate) {
-		
-		return;
+	if (ncerts == 0) { return; }
+	else if (ncerts == 1)
+	{
+		m_certificate = &certs[0];
+	}
+	else
+	{
+		//if there are multiple certificates, iterrating to find a valid one
+		for (int i = 0; i < ncerts; i++)
+		{
+			if (isValidCertificate(&certs[i]))
+			{
+				m_certificate = &certs[i];
+				break;
+			}
+		}
 	}
 
-	//getting the certificate
+	if (m_certificate == nullptr) return;
 
 	int length = i2d_X509(m_certificate->x509, 0);
-
-	std::string result;
 
 	std::vector<char> vec;
 	vec.resize(length);
@@ -129,6 +184,7 @@ PKCS11::PKCS11()
 	if (i2d_X509(m_certificate->x509, dataPu) < 0)
 	{
 		m_509 = std::string();
+		return;
 	}
 
 	m_509 = Base64Convert::encode(vec.data(), vec.size());
@@ -138,11 +194,11 @@ PKCS11::PKCS11()
 	if (!loginRequired())
 		m_prv_key = PKCS11_get_private_key(PKCS11_find_key(m_certificate));
 
-//getting the subject name
+	//getting the subject name
 	char* subj = X509_NAME_oneline(X509_get_subject_name(m_certificate->x509), NULL, 0);
 	m_subjectName = std::string(subj);
 	OPENSSL_free(subj);
-//getting the issuer
+	//getting the issuer
 	char* issuer = X509_NAME_oneline(X509_get_issuer_name(m_certificate->x509), NULL, 0);
 	m_issuer = std::string(issuer);
 	OPENSSL_free(issuer);
@@ -170,9 +226,9 @@ bool PKCS11::loginRequired()
 	return !isLoggedIn;
 }
 
-bool PKCS11::login(std::string pass)
+bool PKCS11::login(const std::string& pass)
 {
-	if (!loginRequired()) return false;
+	if (!loginRequired()) return true;
 
 	bool success = PKCS11_login(m_slot, 0, pass.data()) == 0;
 
@@ -198,7 +254,6 @@ std::string PKCS11::pem_x509cert() const
 evp_pkey_st* PKCS11::takePrivateKey()
 {
 	return m_prv_key;
-
 }
 
 std::string PKCS11::sha1Digest(const std::string& data)
@@ -216,7 +271,6 @@ std::string PKCS11::sha1Digest(const std::string& data)
 
 	return std::string(reinterpret_cast<const char*>(&digest_value), dv_length);
 }
-
 
 
 void PKCS11::unloadModule()
@@ -284,7 +338,7 @@ std::string PKCS11::getSignedValue64(const std::string& digestValue)
 
 PKCS11::~PKCS11()
 {
-	
+
 	/*
 		both xmlsec and qt take ownership of the private key
 		so releasing the slots causes a crash

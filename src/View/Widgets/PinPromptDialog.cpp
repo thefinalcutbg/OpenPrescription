@@ -1,5 +1,6 @@
 ﻿#include "PinPromptDialog.h"
 #include <qsslcertificate.h>
+
 PinPromptDialog::PinPromptDialog(const std::string& pem, QWidget *parent)
 	: QDialog(parent)
 {
@@ -11,9 +12,8 @@ PinPromptDialog::PinPromptDialog(const std::string& pem, QWidget *parent)
 
 	ui.issuerLabel->setText(cert.issuerDisplayName());
 	ui.nameLabel->setText(cert.subjectDisplayName());
-
+	ui.expieryLabel->setText(cert.expiryDate().toString("dd.MM.yyyy") + " г.");
 	ui.lineEdit->setEchoMode(QLineEdit::EchoMode::Password);
-	ui.lineEdit->setMaxLength(10);
 
 	connect(ui.okButton, &QPushButton::clicked,
 		[=] {
