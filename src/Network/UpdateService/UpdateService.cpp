@@ -5,9 +5,9 @@
 #include <QEventLoop>
 #include <QDebug>
 #include <JsonCpp/json.h>
-#include "View/Widgets/UpdateDownloader.h";
+#include "View/Widgets/UpdateDownloader.h"
 
-constexpr int programVersion = 5;
+constexpr int programVersion = 6;
 
 bool UpdateService::restartForUpdate()
 {

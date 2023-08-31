@@ -44,7 +44,7 @@
    <item>
     <widget class="QLabel" name="formLabel">
      <property name="text">
-      <string/>
+      <string>(името на медикамента трябва да е изписано на латиница)</string>
      </property>
     </widget>
    </item>
