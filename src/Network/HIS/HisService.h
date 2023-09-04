@@ -21,11 +21,11 @@ protected:
 	std::string subject(const Patient& p);
 	std::string requester(bool includeNhifCode = false);
 
-	std::string bind(const std::string& name, std::string value);
+	std::string bind(const std::string& name, const std::string& value, bool isUserInput = false);
 	std::string bind(const std::string& name, int value, bool ommitZero = true);
 	std::string bind(const std::string& name, bool value);
 	std::string bind(const std::string& name, double value);
-	std::string bind(const std::string& name, const char* value);
+	std::string bind(const std::string& name, const char* value, bool isUserInput = false);
 
 	std::string getErrors(const std::string& reply);
 

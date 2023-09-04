@@ -14,6 +14,7 @@ class PrescriptionPresenter : public TabInstance
 
 	EPrescription::Issue issue_prescription;
 	EPrescription::Cancel cancel_prescription;
+	EPrescription::Fetch check_status_service;
 
 	void sendPrescriptionToHis();
 	void cancelPrescription();
@@ -22,7 +23,7 @@ public:
 	PrescriptionPresenter(ITabView* tabView, TabPresenter* tabPresenter, std::shared_ptr<Patient> patient, long long rowId = 0);
 
 	void nrnButtonClicked();
-
+	void checkStatus();
 	void addPressed();
 	void editPressed(int idx);
 	void deletePressed(int idx);

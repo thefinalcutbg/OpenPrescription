@@ -9,6 +9,7 @@
 #include "Model/FreeFunctions.h"
 #include "Model/Patient.h"
 #include <QDateTime>
+#include "Model/FreeFunctions.h"
 
 constexpr const char* hisUrl = "https://api.his.bg/";
 //constexpr const char* hisUrl = "https://ptest-api.his.bg/";
@@ -183,23 +184,32 @@ std::string HisService::requester(bool nhif)
 
 }
 
+
 std::string HisService::bind(const std::string& name, double value)
 {
 	return value ? bind(name, FreeFn::formatDouble(value)) : "";
 }
 
-std::string HisService::bind(const std::string& name, const char* value)
+
+std::string HisService::bind(const std::string& name, const char* value, bool isUserInput)
 {
 	if (value == "") return "";
 
-	return "<nhis:" + name + " value=\"" + value + "\" />";
+	return bind(name, std::string{ value }, isUserInput);
 }
 
-std::string HisService::bind(const std::string& name, std::string value)
+
+std::string HisService::bind(const std::string& name, const std::string& value, bool isUserInput)
 {
 	if (value.empty()) return "";
 
-	return "<nhis:" + name + " value=\"" + value + "\" />";
+	auto result = "<nhis:" + name + " value=\"";
+
+	result += isUserInput ? FreeFn::escapeXml(value) : value;
+
+	result += "\" />";
+
+	return result;
 }
 
 std::string HisService::bind(const std::string& name, int value, bool ommitZero)
