@@ -1,6 +1,6 @@
 {
 	"win64": {
-		"ver": 5,
-		"dl": "https://github.com/thefinalcutbg/OpenPrescription/releases/download/v0.5/OpenPrescrSetup_win64.exe"
+		"ver": 6,
+		"dl": "https://github.com/thefinalcutbg/OpenPrescription/releases/download/v0.6/OpenPrescrSetup.exe"
 	}
 }
