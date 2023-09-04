@@ -28,7 +28,7 @@ LicenseFile=license.rtf
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=compiled
-OutputBaseFilename=OpenPrescrSetup_win64
+OutputBaseFilename=OpenPrescrSetup
 SetupIconFile=icon_prescr.ico
 Compression=lzma
 SolidCompression=yes
