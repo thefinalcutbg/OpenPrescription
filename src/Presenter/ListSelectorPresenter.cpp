@@ -6,13 +6,17 @@
 ListSelectorPresenter::ListSelectorPresenter()
 {}
 
-void ListSelectorPresenter::openDialog()
+void ListSelectorPresenter::openDialog(TabType type)
 {
+	m_currentModelType = type;
+
 	if (!view) {
 		m_selectedInstances.clear();
 		ModalDialogBuilder::openDialog(this);
 	}
 	else view->focus();
+
+
 }
 
 void ListSelectorPresenter::setView(IListSelectorView* view)
@@ -21,9 +25,7 @@ void ListSelectorPresenter::setView(IListSelectorView* view)
 
 	if (!view) return;
 
-
 	view->setDates(m_from, m_to);
-	view->setRows(m_patientRows);
 
 	refreshModel();
 	

@@ -51,13 +51,18 @@ void MainPresenter::newPerscriptionPressed()
         m_tabPresenter.openPerscription(patient.value());
 }
 
-void MainPresenter::showListSelector()
+void MainPresenter::showPatients()
 {
-    m_listSelector.openDialog();
+    m_listSelector.openDialog(TabType::PatientSummary);
 }
 
 
-bool MainPresenter::save() 
+void MainPresenter::showPrescriptions()
+{
+    m_listSelector.openDialog(TabType::Prescription);
+}
+
+bool MainPresenter::save()
 {
     if(m_tabPresenter.currentTab())
         return m_tabPresenter.currentTab()->save();

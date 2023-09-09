@@ -18,13 +18,15 @@ OpenPrescription::OpenPrescription(QWidget* parent)
    // ui.saveButton->setIcon(QIcon(":/icons/icon_save.png"));
    // ui.openButton->setIcon(QIcon(":/icons/icon_open.png"));
     ui.aboutButton->setIcon(QIcon(":/icons/icon_question.png"));
-    ui.perscrButton->setPosition(HalfRoundedButton::Position::Alone);
-    ui.openButton->setPosition(HalfRoundedButton::Position::Alone);
+    ui.prescrButton->setPosition(HalfRoundedButton::Position::Alone);
+    ui.patientButton->setPosition(HalfRoundedButton::Position::Alone);
+    ui.newButton->setPosition(HalfRoundedButton::Position::Alone);
     ui.userButton->setPosition(HalfRoundedButton::Position::Alone);
 
    // connect(ui.saveButton, &QPushButton::clicked, [&] { presenter.save(); });
-    connect(ui.openButton, &QPushButton::clicked, [&] {presenter.showListSelector(); });
-    connect(ui.perscrButton, &QPushButton::clicked, [&] { presenter.newPerscriptionPressed(); });
+    connect(ui.patientButton, &QPushButton::clicked, [&] {presenter.showPatients(); });
+    connect(ui.prescrButton, &QPushButton::clicked, [&] {presenter.showPrescriptions(); });
+    connect(ui.newButton, &QPushButton::clicked, [&] { presenter.newPerscriptionPressed(); });
     connect(ui.userButton, &QPushButton::clicked, [&] { presenter.editDoctor(); });
     connect(ui.aboutButton, &QPushButton::clicked, [&] { AboutDialog d; d.exec(); });
 /*

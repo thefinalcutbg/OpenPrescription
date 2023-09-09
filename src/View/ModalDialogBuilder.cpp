@@ -13,9 +13,9 @@ void ModalDialogBuilder::openDialog(PatientDialogPresenter* p)
 
 void ModalDialogBuilder::openDialog(ListSelectorPresenter* p)
 {
-	SelectorDialog* d = new SelectorDialog(p);
-	d->setAttribute(Qt::WA_DeleteOnClose);
-	d->show();
+	SelectorDialog d(p);
+
+	d.exec();
 }
 
 #include "View/Widgets/MedicationDialog.h"

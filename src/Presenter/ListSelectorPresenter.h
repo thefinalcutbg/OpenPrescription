@@ -27,7 +27,7 @@ public:
 	
 	void setTabPresenter(TabPresenter* tabPresenter);
 
-	void openDialog();
+	void openDialog(TabType type);
 
 	void setView(IListSelectorView* view);
 

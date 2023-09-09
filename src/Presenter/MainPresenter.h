@@ -19,7 +19,8 @@ public:
 	void editDoctor();
 	void setView(IMainView* view);
 	void newPerscriptionPressed();
-	void showListSelector();
+	void showPatients();
+	void showPrescriptions();
 	bool save();
 	void userSettingsPressed();
 	//returns false when user selects cancel, otherwise returns true

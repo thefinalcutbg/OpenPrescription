@@ -10,6 +10,8 @@ SelectorDialog::SelectorDialog(ListSelectorPresenter* presenter) :
 {
 	ui.setupUi(this);
 
+	setModal(true);
+
 	setWindowFlags(Qt::Window);
 	setWindowTitle("Документи");
 	setWindowIcon(QIcon(":/icons/icon_open.png"));
@@ -28,10 +30,6 @@ SelectorDialog::SelectorDialog(ListSelectorPresenter* presenter) :
 		QApplication::restoreOverrideCursor();
 		
 		});
-
-
-	connect(ui.dataTypeCombo, &QComboBox::currentIndexChanged,
-		[=](int idx) {presenter->setListType(static_cast<TabType>(idx));});
 
 	connect(ui.idSearchEdit, &QLineEdit::textChanged, [=]
 		{
@@ -91,8 +89,9 @@ void SelectorDialog::setRows(const std::vector<PatientRow>& rows)
 {
 	patient_model.setRows(rows);
 
-	QSignalBlocker block(ui.dataTypeCombo);
-	ui.dataTypeCombo->setCurrentIndex(0);
+	//QSignalBlocker block(ui.dataTypeCombo);
+	//ui.dataTypeCombo->setCurrentIndex(0);
+	ui.groupBox->hide();
 
 	idFilter.setSourceModel(&patient_model);
 	idFilter.setFilterKeyColumn(1);
@@ -136,8 +135,7 @@ void SelectorDialog::setRows(const std::vector<PrescriptionRow>& rows)
 {
 	perscription_model.setRows(rows);
 
-	QSignalBlocker block(ui.dataTypeCombo);
-	ui.dataTypeCombo->setCurrentIndex(1);
+	ui.groupBox->show();
 
 	idFilter.setSourceModel(&perscription_model);
 	idFilter.setFilterKeyColumn(3);

@@ -33,29 +33,9 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QComboBox" name="dataTypeCombo">
-        <property name="minimumSize">
-         <size>
-          <width>150</width>
-          <height>0</height>
-         </size>
-        </property>
-        <item>
-         <property name="text">
-          <string>Пациенти</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Рецепти</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>от</string>
+         <string>От</string>
         </property>
        </widget>
       </item>
