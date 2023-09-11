@@ -29,6 +29,7 @@ void PatientDialogPresenter::setView(IPatientDialog* view)
 
 	view->lineEdit(city)->setInputValidator(&city_validator);
 	view->lineEdit(fname)->setInputValidator(&name_validator);
+	view->lineEdit(mname)->setInputValidator(&cyrillic_validator);
 	view->lineEdit(lname)->setInputValidator(&name_validator);
 	view->dateEdit()->setInputValidator(&birth_validator);
 	changePatientType(1);
@@ -49,7 +50,6 @@ void PatientDialogPresenter::changePatientType(int index)
 		view->setLn4View(false);
 
 		view->lineEdit(id)->setInputValidator(&egn_validator);
-		view->lineEdit(mname)->setInputValidator(&name_validator);
 		view->lineEdit(id)->validateInput();
 		view->resetFields();
 		break;
@@ -57,7 +57,6 @@ void PatientDialogPresenter::changePatientType(int index)
 		view->setLn4View(true);
 
 		view->lineEdit(id)->setInputValidator(&ln4_validator);
-		view->lineEdit(mname)->setInputValidator(&cyrillic_validator);
 		view->lineEdit(id)->validateInput();;
 		view->resetFields();
 		break;
