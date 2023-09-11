@@ -72,7 +72,7 @@ void DbDoctor::insertDoctor(const Doctor& d)
 
     db.newStatement(
         "INSERT INTO doctor ("
-        "lpk,rzi,fname,lname,phone,egn,specialty) "
+        "lpk,rzi,fname,lname,phone,specialty) "
         "VALUES (?,?,?,?,?,?)"
 
     );
