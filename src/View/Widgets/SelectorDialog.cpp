@@ -89,6 +89,7 @@ void SelectorDialog::setRows(const std::vector<PatientRow>& rows)
 {
 	patient_model.setRows(rows);
 
+	setWindowTitle("Пациенти");
 	//QSignalBlocker block(ui.dataTypeCombo);
 	//ui.dataTypeCombo->setCurrentIndex(0);
 	ui.groupBox->hide();
@@ -134,6 +135,8 @@ void SelectorDialog::setRows(const std::vector<PatientRow>& rows)
 void SelectorDialog::setRows(const std::vector<PrescriptionRow>& rows)
 {
 	perscription_model.setRows(rows);
+
+	setWindowTitle("Изписани рецепти");
 
 	ui.groupBox->show();
 

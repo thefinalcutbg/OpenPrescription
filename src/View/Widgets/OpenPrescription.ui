@@ -89,6 +89,25 @@
        </widget>
       </item>
       <item>
+       <widget class="HalfRoundedButton" name="prescrButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Изписани рецепти</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="HalfRoundedButton" name="patientButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -113,25 +132,6 @@
         </property>
         <property name="text">
          <string>Пациенти</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="HalfRoundedButton" name="prescrButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>40</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Изписани рецепти</string>
         </property>
        </widget>
       </item>

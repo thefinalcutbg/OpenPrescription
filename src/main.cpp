@@ -49,7 +49,7 @@ bool initFunction() {
             "Неуспешно създаване на базата данни."
             "\nСтартирайте програмата в администраторски режим"
         );
-        return 0;
+        return false;
     };
 
     //Intializing static data
