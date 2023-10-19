@@ -6,6 +6,7 @@
 #include "View/Models/PatientTableModel.h"
 #include "View/Models/PrescriptionTableModel.h"
 #include <QSortFilterProxyModel>
+#include <QMenu>
 
 class ListSelectorPresenter;
 
@@ -19,7 +20,7 @@ private:
 	QSortFilterProxyModel idFilter;
 	QSortFilterProxyModel nameFilter;
 	QSortFilterProxyModel phoneFilter;
-
+	QMenu* main_menu{ nullptr };
 	PatientTableModel patient_model;
 	PrescriptionTableModel perscription_model;
 
@@ -40,7 +41,7 @@ private:
 
 	void focus() override;
 	void close() override;
-
+	void contextMenuRequested(const QPoint& p);
 
 
 };

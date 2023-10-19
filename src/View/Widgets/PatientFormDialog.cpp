@@ -79,6 +79,8 @@ void PatientFormDialog::close()
 void PatientFormDialog::setLn4View(bool show)
 {
     ui.sexCombo->setCurrentIndex(0);
+    ui.sexCombo->setDisabled(!show);
+    ui.birthEdit->setDisabled(!show);
 
 }
 

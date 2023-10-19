@@ -4,6 +4,7 @@
 #include  <QRegularExpression>
 #include <QApplication>
 #include "View/Theme.h"
+#include <QClipboard>
 
 SelectorDialog::SelectorDialog(ListSelectorPresenter* presenter) :
 	presenter(presenter)
@@ -49,7 +50,9 @@ SelectorDialog::SelectorDialog(ListSelectorPresenter* presenter) :
 			phoneFilter.setFilterRegularExpression(QRegularExpression(text, QRegularExpression::PatternOption::CaseInsensitiveOption));
 		});
 
+	ui.tableView->setContextMenuPolicy(Qt::CustomContextMenu);
 
+	connect(ui.tableView, &QTableView::customContextMenuRequested, this, [=](const QPoint& p) {contextMenuRequested(p); });
 
 	connect(ui.tableView, &QTableView::doubleClicked, this, [=] { presenter->openCurrentSelection(); });
 
@@ -186,5 +189,49 @@ void SelectorDialog::focus()
 void SelectorDialog::close()
 {
 	QDialog::accept();
+}
+
+void SelectorDialog::contextMenuRequested(const QPoint& p)
+{
+
+		if (ui.tableView->selectionModel()->currentIndex().row() == -1) return;
+
+		if (main_menu) {
+			delete main_menu;
+		}
+
+		main_menu = new QMenu(this);
+
+		QAction* action;
+
+		action = (new QAction("Отвори", main_menu));
+		connect(action, &QAction::triggered, [=] { presenter->openCurrentSelection(); });
+		action->setIcon(QIcon(":/icons/icon_open.png"));
+		main_menu->addAction(action);
+
+		action = (new QAction("Нова рецепта", main_menu));
+		connect(action, &QAction::triggered, [=] { presenter->openNewDocument(TabType::Prescription); });
+		action->setIcon(QIcon(":/icons/icon_prescr.png"));
+		main_menu->addAction(action);
+
+		action = (new QAction("Копирай текста", main_menu));
+		connect(action, &QAction::triggered, [=] {
+
+			QClipboard* clipboard = QApplication::clipboard();
+			QString text = ui.tableView->currentIndex().data().toString();
+			clipboard->setText(text);
+			});
+		action->setIcon(QIcon(":/icons/icon_copy.png"));
+		main_menu->addAction(action);
+
+		action = (new QAction("Изтрий", main_menu));
+		connect(action, &QAction::triggered, [=] { presenter->deleteCurrentSelection(); });
+		action->setIcon(QIcon(":/icons/icon_remove.png"));
+		main_menu->addAction(action);
+
+		main_menu->setStyleSheet(Theme::getPopupMenuStylesheet());
+
+		main_menu->popup(ui.tableView->viewport()->mapToGlobal(p));
+	
 }
 
