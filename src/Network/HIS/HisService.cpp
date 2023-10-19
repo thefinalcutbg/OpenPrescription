@@ -18,13 +18,11 @@ std::string timeNow() {
 	auto t = QDateTime::currentDateTime();
 	return t.toString(Qt::DateFormat::ISODate).toStdString();
 }
-
-
+//#include <QDebug>
 bool HisService::sendRequestToHis(const std::string& query)
 {
 	if (awaiting_reply) return false;
-	//ModalDialogBuilder::showMultilineDialog(buildMessage(query)); return true;
-
+	//qDebug() << buildMessage(query).c_str(); return true;
 	if (HisToken::getToken().empty()) {
 		return HisToken::requestToken(this, query);
 	}
@@ -52,7 +50,7 @@ bool HisService::sendRequestToHisNoAuth(const std::string& query)
 	return true;
 }
 
-const std::string HisService::signMessage(const std::string& message)
+std::string HisService::signMessage(const std::string& message)
 {
 	PKCS11 signer;
 
@@ -85,7 +83,7 @@ const std::string HisService::signMessage(const std::string& message)
 
 
 
-const std::string HisService::buildMessage(const std::string& query)
+std::string HisService::buildMessage(const std::string& query)
 {
 
 	constexpr const char* softwareName = "OpenPrescription";
@@ -112,7 +110,7 @@ const std::string HisService::buildMessage(const std::string& query)
 				"<nhis:recipientId value=\"NHIS\"/>"
 				"<nhis:messageId value=\"" + FreeFn::getUuid() + "\"/>"
 				"<nhis:messageType value=\"" + messageType + "\"/>"
-				"<nhis:createdOn  value=\"" + timeNow() + "\"/>"
+				"<nhis:createdOn  value=\"" + FreeFn::getTimeStampUTC() + "\"/>"
 			"</nhis:header>"
 		
 			"<nhis:contents>"
@@ -126,10 +124,18 @@ const std::string HisService::buildMessage(const std::string& query)
 	
 }
 
-std::string HisService::subject(const Patient& p)
+std::string HisService::subject(const Patient& p, bool isPregnant, bool isBreastfeeding)
 {
 	std::string middleNameTag = p.MiddleName.size()?
 		"<nhis:middle value=\"" + p.MiddleName + "\"/>" : "";
+
+	std::string preg_breastfeed;
+
+	if (p.canBePregnant())
+	{
+		preg_breastfeed += bind("isPregnant", isPregnant);
+		preg_breastfeed += bind("isBreastFeeding", isBreastfeeding);
+	}
 
 	std::string subject =
 	"<nhis:subject>"
@@ -151,8 +157,9 @@ std::string HisService::subject(const Patient& p)
 		"<nhis:phone value=\""+p.phone+"\"/>"
 		//<nhis:email value="[string]"/>
 		"<nhis:various>"
-			+bind("age", p.getAge())+
-		"</nhis:various>"
+			+bind("age", p.getAge())
+			+preg_breastfeed
+		+"</nhis:various>"
 	"</nhis:subject>"
 	;
 

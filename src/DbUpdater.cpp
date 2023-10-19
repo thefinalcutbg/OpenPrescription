@@ -24,10 +24,22 @@ namespace DbMigrations {
 		db.execute("ALTER TABLE doctor DROP COLUMN egn");
 		db.execute("PRAGMA user_version = 2");
 	}
+
+	void migrateTo3() {
+
+		if (Db::version() != 2) return;
+
+		Db db;
+
+		db.execute("ALTER TABLE prescription ADD COLUMN is_pregnant INTEGER");
+		db.execute("ALTER TABLE prescription ADD COLUMN is_breastfeeding INTEGER");
+		db.execute("PRAGMA user_version = 3");
+	}
 };
 
 void DbUpdater::updateDb()
 {
 	DbMigrations::migrateTo1();
 	DbMigrations::migrateTo2();
+	DbMigrations::migrateTo3();
 }

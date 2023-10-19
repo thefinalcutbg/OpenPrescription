@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <fstream>
 
-std::string FreeFn::formatDouble(double price)
+std::string FreeFn::formatDouble(const double& price)
 {
     bool isDecimal{ true };
 
@@ -78,6 +78,26 @@ std::string FreeFn::getUuid()
     return QUuid::createUuid().toString(QUuid::StringFormat::Id128).toStdString();
 }
 
+#include <QDateTime>
+
+std::string FreeFn::getTimeStampLocal()
+{
+    return QDateTime::currentDateTime().toString(Qt::ISODate).toStdString();
+}
+
+std::string FreeFn::getTimeStampUTC()
+{
+    return QDateTime::currentDateTimeUtc().toString(Qt::ISODate).toStdString();
+}
+
+std::string FreeFn::LocalToUTC(const std::string& timeStamp)
+{
+    QDateTime datetime = QDateTime::fromString(timeStamp.c_str(), "yyyy-MM-ddTHH:mm:ss");
+    datetime.setTimeSpec(Qt::TimeSpec::LocalTime);
+
+    return datetime.toUTC().toString(Qt::ISODate).toStdString();
+}
+
 std::string FreeFn::escapeXml(const std::string& data)
 {
     std::string result;
@@ -95,4 +115,29 @@ std::string FreeFn::escapeXml(const std::string& data)
     }
 
     return result;
+}
+
+std::string FreeFn::listToString(const std::vector<std::string>& list, const std::string& emptyList)
+{
+    std::string result;
+
+    for (auto& str : list) {
+        result += str;
+        result += ", ";
+    }
+
+    if (result.size()) {
+        result.pop_back();
+        result.pop_back();
+    }
+    else {
+        result = emptyList;
+    };
+
+    return result;
+}
+
+bool FreeFn::contains(const std::string& parent, const std::string& child)
+{
+    return QString(parent.c_str()).contains(child.c_str());
 }

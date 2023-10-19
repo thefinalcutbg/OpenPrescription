@@ -4,95 +4,94 @@
 #include "Model/FreeFunctions.h"
 #include "TinyXML/tinyxml.h"
 
-
-bool EPrescription::Issue::sendRequest(const Prescription& perscr, const Patient& patient, std::function<void(const std::string&)> nrnCallback)
+bool EPrescription::Issue::sendRequest(const Prescription& prescr, const Patient& patient, std::function<void(const std::string&)> nrnCallback)
 {
 	m_callback = nrnCallback;
 
 	std::string contents;
-
+	
 	contents.reserve(4000);
 
-	contents +=
+	contents+=
 		"<nhis:prescription>"
-		+ bind("lrn", perscr.LRN)
-		+ bind("authoredOn", perscr.date.to8601())
-		+ bind("category", perscr.category)
-		+ bind("isProtocolBased", false)
-		+ bind("financingSource", "4")
-		+ bind("dispensationType", perscr.dispensation.getNhisDispensation())
-		+ bind("allowedRepeatsNumber", perscr.dispensation.getNhisRepeats())
-		+ bind("supplements", perscr.supplements, true)
-		+ "<nhis:group>"
-		;
+			+ bind("lrn", prescr.LRN)
+		    + bind("authoredOn", prescr.date.to8601())
+			+ bind("category", prescr.category)
+			+ bind("isProtocolBased", false)
+			+ bind("financingSource", "4")
+			+ bind("dispensationType", prescr.dispensation.getNhisDispensation())
+			+ bind("allowedRepeatsNumber", prescr.dispensation.getNhisRepeats())
+			+ bind("supplements", prescr.supplements, true)
+			+ "<nhis:group>"
+	;
 
 	//Medications:
-	for (int i = 0; i < perscr.medicationGroup.size(); i++)
+	for(int i = 0; i < prescr.medicationGroup.size(); i++)
 	{
-		auto& m = perscr.medicationGroup[i];
+		auto& m = prescr.medicationGroup[i];
 
-		contents +=
-			"<nhis:medication>"
-			+ bind("sequenceId", i + 1)
-			+ "<nhis:medicationCode "
-			"value=\"" + std::to_string(m.getNumenclatureKey()) + "\" "
-			"name=\"" + m.name() + "\" />"
-
-			+ bind("form", m.getFormKey(), false)
-			+ bind("priority", m.priority)
-			+ bind("note", m.note)
-			+ bind("quantityValue", static_cast<int>(m.quantity))
-			+ bind("isQuantityByForm", m.byForm)
-			+ bind("isSubstitutionAllowed", m.substitution)
+		contents+=
+				"<nhis:medication>"
+					+ bind("sequenceId", i+1)
+					+ "<nhis:medicationCode "
+							"value=\"" + std::to_string(m.getNumenclatureKey()) + "\" " 
+							"name=\"" + m.name() + "\" />"
+						
+					+ bind("form", m.getFormKey(), false)
+					+ bind("priority", m.priority)
+					+ bind("note", m.note)
+					+ bind("quantityValue", static_cast<int>(m.quantity))
+					+ bind("isQuantityByForm", m.byForm)
+					+ bind("isSubstitutionAllowed", m.substitution)
 			;
 
-		//Effective Dose Period:
+				//Effective Dose Period:
 
-		if (m.dosePeriod)
-		{
-			contents += "<nhis:effectiveDosePeriod>";
-			contents += bind("start", m.dosePeriod->from.to8601());
-			contents += bind("end", m.dosePeriod->to.to8601());
-			contents += "</nhis:effectiveDosePeriod>";
-		}
+				if (m.dosePeriod)
+				{
+					contents += "<nhis:effectiveDosePeriod>";
+					contents += bind("start", m.dosePeriod->from.to8601());
+					contents += bind("end", m.dosePeriod->to.to8601());
+					contents += "</nhis:effectiveDosePeriod>";
+				}
 
-		//Dosages:
-		for (int y = 0; y < m.dosage.size(); y++)
-		{
-			auto& d = m.dosage[y];
+				//Dosages:
+				for (int y = 0; y < m.dosage.size(); y++)
+				{
+					auto& d = m.dosage[y];
 
-			contents +=
-				"<nhis:dosageInstruction>"
-				+ bind("sequence", y + 1)
-				+ bind("asNeeded", d.asNeeded)
-				+ bind("route", d.route.getKey())
-				+ bind("doseQuantityValue", d.doseQuantity.value)
-				+ bind("doseQuantityCode", d.doseQuantity.getXmlUnitValue())
-				+ bind("frequency", static_cast<int>(d.frequency))
-				+ bind("period", d.period.value)
-				+ bind("periodUnit", d.period.getNHISKey())
-				+ bind("boundsDuration", d.bounds.value)
-				+ bind("boundsDurationUnit", d.bounds.getNHISKey())
-				;
+					contents +=
+						"<nhis:dosageInstruction>"
+							+ bind("sequence", y+1)
+							+ bind("asNeeded", d.asNeeded)
+							+ bind("route", d.route.getKey())
+							+ bind("doseQuantityValue", d.doseQuantity.value)
+							+ bind("doseQuantityCode", d.doseQuantity.getXmlUnitValue())
+							+ bind("frequency", static_cast<int>(d.frequency))
+							+ bind("period", d.period.value)
+							+ bind("periodUnit", d.period.getNHISKey())
+							+ bind("boundsDuration", d.bounds.value)
+							+ bind("boundsDurationUnit", d.bounds.getNHISKey())
+					;
 
-			for (auto tagIdx : d.when.getTagIdx()) contents += bind("when", tagIdx);
+							for (auto tagIdx : d.when.getTagIdx()) contents += bind("when", tagIdx);
 
-			if (d.when.getTagIdx().size()) contents += bind("offset", d.when.getOffset());
+							if (d.when.getTagIdx().size()) contents += bind("offset", d.when.getOffset());
 
-			contents += bind("text", d.additionalInstructions, true);
-			contents += bind("interpretation", d.parse());
+							contents += bind("text", d.additionalInstructions, true);
+							contents += bind("interpretation", d.parse());
 
-			contents += "</nhis:dosageInstruction>";
+					contents+= "</nhis:dosageInstruction>";
 
-		}
+				}
 
 		contents += "</nhis:medication>";
 	}
-
+					
 	contents += "</nhis:group>"
-		"</nhis:prescription>"
-		+ subject(patient)
-		+ requester();
+				"</nhis:prescription>"
+				+ subject(patient, prescr.isPregnant, prescr.isBreastFeeding)
+				+ requester();
 
 	return HisService::sendRequestToHis(contents);
 }
@@ -132,15 +131,15 @@ bool EPrescription::Cancel::sendRequest(const std::string& nrn, std::function<vo
 	m_callback = success;
 
 	auto reason = ModalDialogBuilder::inputDialog(
-		"Основание за анулиране на рецептата:",
-		"Анулиране на рецепта"
-	);
+						"Основание за анулиране на рецептата:",
+						"Анулиране на рецепта"
+					);
 
 	if (reason.empty()) return false;
 
-	std::string contents =
+	std::string contents = 
 		bind("nrnPrescription", nrn)
-		+ bind("revokeReason", reason);
+	+	bind("revokeReason", reason);
 
 	return HisService::sendRequestToHis(contents);
 }
@@ -206,7 +205,7 @@ void EPrescription::Fetch::parseReply(const std::string& reply)
 
 	if (status)
 	{
-		m_callback(static_cast<EPrescription::Status>(status->FirstAttribute()->IntValue()));
+		m_callback(static_cast<EPrescription::Status>(status->FirstAttribute()->IntValue())); 
 	}
 
 	m_callback = nullptr;

@@ -1,9 +1,7 @@
 ﻿#include "PrescriptionView.h"
-
-#include <QPainter>
-
 #include "Presenter/PrescriptionPresenter.h"
 #include "View/Theme.h"
+#include <QPainter>
 
 PrescriptionView::PrescriptionView(QWidget* parent)
 	: QWidget(parent)
@@ -20,8 +18,8 @@ PrescriptionView::PrescriptionView(QWidget* parent)
 
 	setStyleSheet(Theme::getFancyStylesheet());
 
-	connect(ui.addButton, &QPushButton::clicked, [=] {if (presenter)presenter->addPressed();});
-	connect(ui.editButton, &QPushButton::clicked, [=] {if (presenter)presenter->editPressed(ui.medicationTable->selectedRow());});
+	connect(ui.addButton, &QPushButton::clicked, [=] {if (presenter)presenter->addPressed(); });
+	connect(ui.editButton, &QPushButton::clicked, [=] {if (presenter)presenter->editPressed(ui.medicationTable->selectedRow()); });
 	connect(ui.deleteButton, &QPushButton::clicked, [=] {
 
 		if (!presenter) return;
@@ -39,15 +37,16 @@ PrescriptionView::PrescriptionView(QWidget* parent)
 
 		});
 
-	connect(ui.medicationTable, &TableView::editPressed, [=](int idx){  if (presenter) presenter->editPressed(idx); });
-	connect(ui.medicationTable, &TableView::deletePressed, [=](int idx) { if (presenter) presenter->deletePressed(idx); });
+	connect(ui.medicationTable, &TableView::deletePressed, [=](int index) { if (presenter) presenter->deletePressed(index); });
+	connect(ui.medicationTable, &TableView::editPressed, [=](int index) { if (presenter) presenter->editPressed(index); });
 	connect(ui.dispensationCombo, &QComboBox::currentIndexChanged, [&] { dispensationLogic(); });
 	connect(ui.repeats, &QSpinBox::valueChanged, [&] { if (ui.repeats->isHidden()) return; dispensationLogic(); });
-	connect(ui.supplementsEdit, &QLineEdit::textChanged, [=](const QString& text) {if (presenter) presenter->supplementsChanged(text.toStdString());});
+	connect(ui.supplementsEdit, &QLineEdit::textChanged, [=](const QString& text) {if (presenter) presenter->supplementsChanged(text.toStdString()); });
 	connect(ui.nrnButton, &QPushButton::clicked, [=] {if (presenter) presenter->nrnButtonClicked(); });
-	connect(ui.dateEdit, &QDateEdit::dateChanged, [=](QDate d) {if (presenter) presenter->dateChanged(Date{ d.day(),d.month(),d.year() });});
+	connect(ui.dateEdit, &QDateEdit::dateChanged, [=](QDate d) {if (presenter) presenter->dateChanged(Date{ d.day(),d.month(),d.year() }); });
 	connect(ui.checkStatusButton, &QPushButton::clicked, [=] { if (presenter) presenter->checkStatus(); });
-
+	connect(ui.pregnancyCheck, &QCheckBox::stateChanged, [=] { sendFemaleProperties(); });
+	connect(ui.breastfeedingCheck, &QCheckBox::stateChanged, [=] { sendFemaleProperties(); });
 }
 
 IPatientTileInfo* PrescriptionView::patientTile()
@@ -68,33 +67,33 @@ void PrescriptionView::dispensationLogic()
 
 	switch (dispensationIdx)
 	{
-		case 0:
-		{
-			ui.repeats->hide();
-			ui.repeatsLabel->hide();
-			ui.repeats->setValue(1);
-			break;
-		}
-		case 1:
-		{
-			ui.repeats->show();
-			int repeats = ui.repeats->value();
-			ui.repeatsLabel->show();
-			break;
-		}
-		case 2:
-		{
-			ui.repeats->hide();
-			ui.repeatsLabel->hide();
-			ui.repeats->setValue(1);
-			break;
-		}
+	case 0:
+	{
+		ui.repeats->hide();
+		ui.repeatsLabel->hide();
+		ui.repeats->setValue(1);
+		break;
+	}
+	case 1:
+	{
+		ui.repeats->show();
+		int repeats = ui.repeats->value();
+		ui.repeatsLabel->show();
+		break;
+	}
+	case 2:
+	{
+		ui.repeats->hide();
+		ui.repeatsLabel->hide();
+		ui.repeats->setValue(1);
+		break;
+	}
 	}
 
 	presenter->dispensationChanged(
-		Dispensation{ 
+		Dispensation{
 			static_cast<Dispensation::Type>(dispensationIdx),
-			static_cast<unsigned int>(ui.repeats->value()) 
+			ui.repeats->value()
 		});
 
 }
@@ -106,6 +105,16 @@ void PrescriptionView::paintEvent(QPaintEvent* event)
 	painter.fillRect(rect(), Theme::background);
 }
 
+void PrescriptionView::sendFemaleProperties()
+{
+	if (!presenter) return;
+
+	presenter->setFemaleProperties(
+		ui.pregnancyCheck->isChecked(),
+		ui.breastfeedingCheck->isChecked()
+	);
+}
+
 void PrescriptionView::setDispensation(const Dispensation& d)
 {
 	QSignalBlocker b1(ui.repeats);
@@ -113,7 +122,7 @@ void PrescriptionView::setDispensation(const Dispensation& d)
 
 	ui.dispensationCombo->setCurrentIndex(static_cast<int>(d.type));
 	ui.repeats->setValue(d.repeats);
-	
+
 	ui.repeats->setHidden(d.type != Dispensation::Type::MultipleUse);
 	ui.repeatsLabel->setHidden(d.type != Dispensation::Type::MultipleUse);
 }
@@ -141,11 +150,15 @@ void PrescriptionView::setReadOnly(bool readOnly)
 	ui.repeats->setReadOnly(readOnly);
 	ui.supplementsEdit->setReadOnly(readOnly);
 	ui.medicationTable->enableContextMenu(!readOnly);
+	ui.pregnancyCheck->setDisabled(readOnly);
+	ui.breastfeedingCheck->setDisabled(readOnly);
 
 }
 
 void PrescriptionView::setNrn(const std::string& nrn)
 {
+	setReadOnly(nrn.size());
+
 	if (nrn.empty()) {
 
 		ui.checkStatusButton->hide();
@@ -160,6 +173,19 @@ void PrescriptionView::setNrn(const std::string& nrn)
 	ui.nrnButton->setText(nrn.c_str());
 	ui.nrnButton->setHoverText("Анулирай");
 
+
+}
+
+void PrescriptionView::setMisc(bool isFemale, bool isPregnant, bool isBreastFeeding)
+{
+	QSignalBlocker p(ui.pregnancyCheck);
+	QSignalBlocker b(ui.breastfeedingCheck);
+
+	ui.pregnancyCheck->setChecked(isPregnant);
+	ui.breastfeedingCheck->setChecked(isBreastFeeding);
+
+	ui.pregnancyCheck->setHidden(!isFemale);
+	ui.breastfeedingCheck->setHidden(!isFemale);
 }
 
 

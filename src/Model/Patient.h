@@ -16,6 +16,8 @@ struct Patient
 	std::string id;
 	Date birth;
 
+	enum Sex { Male = 0, Female = 1 };
+
 	bool sex{ 0 };
 
 	std::string FirstName;
@@ -31,6 +33,7 @@ struct Patient
 	std::string fullName() const;
 	std::string firstLastName() const;
 	std::string getFullAddress() const;
+	bool canBePregnant(const Date & = Date::currentDate()) const;
 
 	~Patient();
 };

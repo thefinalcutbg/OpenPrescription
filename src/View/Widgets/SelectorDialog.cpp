@@ -151,9 +151,10 @@ void SelectorDialog::setRows(const std::vector<PrescriptionRow>& rows)
 
 	ui.tableView->hideColumn(0);
 	ui.tableView->setColumnWidth(1, 100);
-	ui.tableView->setColumnWidth(2, 80);
-	ui.tableView->setColumnWidth(3, 250);
-	ui.tableView->setColumnWidth(4, 120);
+	ui.tableView->setColumnWidth(2, 120);
+	ui.tableView->setColumnWidth(3, 100);
+	ui.tableView->setColumnWidth(4, 250);
+	ui.tableView->setColumnWidth(5, 120);
 
 	ui.fromDateEdit->setDisabled(false);
 	ui.toDateEdit->setDisabled(false);

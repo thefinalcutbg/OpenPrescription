@@ -56,6 +56,15 @@ std::string Patient::getFullAddress() const
 	return city.getString();
 }
 
+bool Patient::canBePregnant(const Date& date) const
+{
+	if (sex == Male) return false;
+
+	auto age = getAge(date);
+
+	return (age > 10 && age < 55);
+}
+
 
 Patient::~Patient()
 {

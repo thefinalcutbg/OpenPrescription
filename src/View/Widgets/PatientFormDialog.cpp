@@ -16,7 +16,7 @@ PatientFormDialog::PatientFormDialog(PatientDialogPresenter* p, QWidget* parent)
     ui.mNameEdit->QLineEdit::setValidator(nameValidator);
     ui.lNameEdit->QLineEdit::setValidator(nameValidator);
 
-    phoneValidator = new QRegularExpressionValidator(QRegularExpression("[0-9-+ a-z A-Z ]+"), this);
+    auto phoneValidator = new QRegularExpressionValidator(QRegularExpression("[0-9-+]+"), this);
     ui.phoneEdit->QLineEdit::setValidator(phoneValidator);
 
     ui.cityLineEdit->setCompletions(Ekatte::cityNameToIdx());

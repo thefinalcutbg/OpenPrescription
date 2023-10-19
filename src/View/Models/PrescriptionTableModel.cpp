@@ -17,11 +17,12 @@ void PrescriptionTableModel::setRows(std::vector<PrescriptionRow> rows)
         this->rows.emplace_back(
 
             QPerscrModel{
-                !r.nrn.empty(),
-                QString::fromStdString(r.date.toBgStandard()),
-                QString::fromStdString(r.patientId),
-                QString::fromStdString(r.patientName),
-                QString::fromStdString(r.patientPhone)
+                .isSentToHis = !r.nrn.empty(),
+                .date = QString::fromStdString(r.date.toBgStandard()),
+                .nrn = QString::fromStdString(r.nrn),
+                .patientID = QString::fromStdString(r.patientId),
+                .patientName = QString::fromStdString(r.patientName),
+                .patientPhone = QString::fromStdString(r.patientPhone),
             }
         );
     }
@@ -56,9 +57,10 @@ QVariant PrescriptionTableModel::headerData(int section, Qt::Orientation orienta
         {
         case 0: return "ID";
         case 1: return "Дата";
-        case 2: return "ЕГН/ЛНЧ";
-        case 3: return "Име на пациента";
-        case 4: return "Телефон";
+        case 2: return "НРН";
+        case 3: return "ЕГН/ЛНЧ/ИН";
+        case 4: return "Име на пациента";
+        case 5: return "Телефон";
         }
 
     if (role == Qt::TextAlignmentRole && orientation == Qt::Horizontal)
@@ -82,7 +84,7 @@ int PrescriptionTableModel::rowCount(const QModelIndex& parent) const
 
 int PrescriptionTableModel::columnCount(const QModelIndex& parent) const
 {
-    return 5;
+    return 6;
 }
 
 #include <QIcon>
@@ -103,9 +105,8 @@ QVariant PrescriptionTableModel::data(const QModelIndex& index, int role) const
     case Qt::DecorationRole:  
           switch (column)
         {
-          case 1:
-              if (rows[row].nrn)
-                  return QIcon(":/icons/icon_his.png");
+          case 2:
+              return rows[row].isSentToHis ? QIcon(":/icons/icon_his.png") : QVariant();
           default:
               return QVariant();
         }
@@ -115,13 +116,14 @@ QVariant PrescriptionTableModel::data(const QModelIndex& index, int role) const
         {
         case 0: return index.row();
         case 1: return rows[row].date;
-        case 2: return rows[row].patientID;
-        case 3: return rows[row].patientName;
-        case 4: return rows[row].patientPhone;
+        case 2: return rows[row].nrn;
+        case 3: return rows[row].patientID;
+        case 4: return rows[row].patientName;
+        case 5: return rows[row].patientPhone;
         default: return QVariant();
         }
     case Qt::TextAlignmentRole:
-        if (column == 1 || column == 2) return int(Qt::AlignCenter);
+        if (column == 1 || column == 3) return int(Qt::AlignCenter);
         else return int(Qt::AlignVCenter | Qt::AlignLeft);
     }
 

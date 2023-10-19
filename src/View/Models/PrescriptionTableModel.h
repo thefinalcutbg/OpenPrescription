@@ -13,12 +13,12 @@ class PrescriptionTableModel : public QAbstractTableModel
 
 	struct QPerscrModel
 	{
-		bool nrn;
+		bool isSentToHis;
 		QString date;
+		QString nrn;
 		QString patientID;
 		QString patientName;
 		QString patientPhone;
-
 	};
 
 

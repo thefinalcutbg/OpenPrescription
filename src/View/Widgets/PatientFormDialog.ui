@@ -229,7 +229,7 @@
    </property>
    <property name="maximumDateTime">
     <datetime>
-     <hour>17</hour>
+     <hour>15</hour>
      <minute>59</minute>
      <second>59</second>
      <year>9999</year>
@@ -275,7 +275,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Рожденна дата:</string>
+    <string>Рождена дата:</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
