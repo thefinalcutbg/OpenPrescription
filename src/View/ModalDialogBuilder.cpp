@@ -133,5 +133,13 @@ std::string ModalDialogBuilder::inputDialog(const std::string& text, const std::
 	return d.result();
 }
 
+#include "Resources.h"
+
+void ModalDialogBuilder::show_eIDAS_Warning()
+{
+	auto warning = Resources::fromPath(":/other/eIDAS.txt");
+	showMessage(warning);
+}
+
 
 

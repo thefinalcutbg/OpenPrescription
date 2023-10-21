@@ -14,12 +14,36 @@
 #include <xmlsec/crypto.h>
 #include <xmlsec/openssl/evp.h>
 #include <xmlsec/transforms.h>
+#include <xmlsec/errors.h>
 #include <libxml/valid.h>
 
 #include "PKCS11.h"
 
+#include "View/ModalDialogBuilder.h"
+
+void errorReprort(const char* file,
+    int line,
+    const char* func,
+    const char* errorObject,
+    const char* errorSubject,
+    int reason,
+    const char* msg
+)
+{
+    //qDebug() << "ERROR";
+    //qDebug() << file;
+    //qDebug() << line;
+    //qDebug() << errorObject;
+    //qDebug() << errorSubject;
+    //qDebug() << reason;
+    //qDebug() << msg;
+    //qDebug() << "\n\n\n";
+
+}
+
 bool init{ false };
 
+const char* s_error = "XML Signing error";
 
 bool initialize()
 {
@@ -49,40 +73,40 @@ bool initialize()
 std::string XmlSigner::signPisQuery(const std::string& bodyContent, evp_pkey_st* prvKey, const std::string& pem_x509)
 {
 
-    auto result = 
-    	"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-		"<e:Envelope xmlns:e=\"http://schemas.xmlsoap.org/soap/envelope/\">"
-			"<e:Header>"
-				"<Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\">"
-					"<SignedInfo>"
-						"<CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\" />"
-						"<SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\" />"
-						"<Reference URI=\"#signedContent\">"
-							"<DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\" />"
-							"<DigestValue>"/*digest goes here*/"</DigestValue>"
-						"</Reference>"
-					"</SignedInfo>"
-				"<SignatureValue>"/*signature value*/"</SignatureValue>"
-				"<KeyInfo>" 
-					"<X509Data>"
-						"<X509Certificate>"/*x509 certificate*/"</X509Certificate>"
-					"</X509Data>"
-				"</KeyInfo>"
-				"</Signature>"
-			"</e:Header>"
-			"<e:Body id=\"signedContent\">" //look at line 124
-				+ bodyContent + //the soap body
-			"</e:Body>"
-		"</e:Envelope>";
+    auto result =
+        "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+        "<e:Envelope xmlns:e=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+        "<e:Header>"
+        "<Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\">"
+        "<SignedInfo>"
+        "<CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\" />"
+        "<SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\" />"
+        "<Reference URI=\"#signedContent\">"
+        "<DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\" />"
+        "<DigestValue>"/*digest goes here*/"</DigestValue>"
+        "</Reference>"
+        "</SignedInfo>"
+        "<SignatureValue>"/*signature value*/"</SignatureValue>"
+        "<KeyInfo>"
+        "<X509Data>"
+        "<X509Certificate>"/*x509 certificate*/"</X509Certificate>"
+        "</X509Data>"
+        "</KeyInfo>"
+        "</Signature>"
+        "</e:Header>"
+        "<e:Body id=\"signedContent\">" //look at line 124
+        + bodyContent + //the soap body
+        "</e:Body>"
+        "</e:Envelope>";
 
 
     if (!init && !initialize()) {
-        return {};//"xmlsec could not be initialized";
+        return "xmlsec could not be initialized";
     }
     init = true;
-   
-    if (prvKey == nullptr) return{};
-    if (pem_x509.empty()) return{};
+
+    if (prvKey == nullptr) return{ "No private key" };
+    if (pem_x509.empty()) return{ "No x509 certificate" };
 
     xmlChar* signedBuffer{ nullptr };
     int signedLength{ 0 };
@@ -90,7 +114,7 @@ std::string XmlSigner::signPisQuery(const std::string& bodyContent, evp_pkey_st*
     /* load doc file */
     xmlDocPtr doc = xmlParseMemory(result.data(), result.size());
     if ((doc == NULL) || (xmlDocGetRootElement(doc) == NULL)) {
-        return {};//"Error: unable to parse file";
+        return { "Error: unable to parse file" };
     }
 
     xmlAttrPtr attr = xmlDocGetRootElement(doc)->children->next->properties;
@@ -99,13 +123,13 @@ std::string XmlSigner::signPisQuery(const std::string& bodyContent, evp_pkey_st*
 
     xmlNodePtr signNode = xmlSecFindNode(xmlDocGetRootElement(doc), xmlSecNodeSignature, xmlSecDSigNs);
     if (signNode == NULL) {
-        return {};//"Error: start node not found";
+        return { "Error: start node not found" };
     }
 
     /* create signature context */
     xmlSecDSigCtxPtr dsigCtx = xmlSecDSigCtxCreate(NULL);
     if (dsigCtx == NULL) {
-        return {};//"Error: failed to create signature context\n";
+        return { "Error: failed to create signature context" };
     }
 
     //dsigCtx->enabledReferenceUris = xmlSecTransformUriTypeSameDocument;
@@ -123,13 +147,14 @@ std::string XmlSigner::signPisQuery(const std::string& bodyContent, evp_pkey_st*
         )
 
     {
-        return {};//"Failed to load certificate"; }
+        return { "Failed to load certificate" };
     }
 
-     /* sign the template */
+    /* sign the template */
     if (xmlSecDSigCtxSign(dsigCtx, signNode) < 0) {
-        
-        return {};//"Error: signature failed\n";
+
+        ModalDialogBuilder::show_eIDAS_Warning();
+        return { "Error: signature failed" };
 
     }
 
@@ -153,7 +178,7 @@ std::string XmlSigner::signPisQuery(const std::string& bodyContent, evp_pkey_st*
     return result;
 }
 
-std::string XmlSigner::signNhifMessage(const std::string& document, evp_pkey_st* prvKey, const std::string pem_x509)
+std::string XmlSigner::signHisMessage(const std::string& document, evp_pkey_st* prvKey, const std::string pem_x509)
 {
 
 
@@ -161,23 +186,23 @@ std::string XmlSigner::signNhifMessage(const std::string& document, evp_pkey_st*
 
         "<Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\">"
             "<SignedInfo>"
-                "<CanonicalizationMethod Algorithm=\"http://www.w3.org/TR/2001/REC-xml-c14n-20010315\" />"
-                "<SignatureMethod Algorithm=\"http://www.w3.org/2001/04/xmldsig-more#rsa-sha256\" />"
-                "<Reference URI=\"\">"
-                    "<Transforms>"
-                        "<Transform Algorithm=\"http://www.w3.org/2000/09/xmldsig#enveloped-signature\" />"
-                    "</Transforms>"
-                    "<DigestMethod Algorithm=\"http://www.w3.org/2001/04/xmlenc#sha256\" />"
-                        "<DigestValue></DigestValue>"
-                "</Reference>"
+            "<CanonicalizationMethod Algorithm=\"http://www.w3.org/TR/2001/REC-xml-c14n-20010315\" />"
+            "<SignatureMethod Algorithm=\"http://www.w3.org/2001/04/xmldsig-more#rsa-sha256\" />"
+            "<Reference URI=\"\">"
+            "<Transforms>"
+            "<Transform Algorithm=\"http://www.w3.org/2000/09/xmldsig#enveloped-signature\" />"
+            "</Transforms>"
+            "<DigestMethod Algorithm=\"http://www.w3.org/2001/04/xmlenc#sha256\" />"
+            "<DigestValue></DigestValue>"
+            "</Reference>"
             "</SignedInfo>"
             "<SignatureValue></SignatureValue>"
             "<KeyInfo>"
-                "<X509Data>"
-                    "<X509Certificate></X509Certificate>"
-                "</X509Data>"
+            "<X509Data>"
+            "<X509Certificate></X509Certificate>"
+            "</X509Data>"
             "</KeyInfo>"
-        "</Signature>"
+            "</Signature>"
 
     };
 
@@ -196,18 +221,20 @@ std::string XmlSigner::signNhifMessage(const std::string& document, evp_pkey_st*
         ) {
     };
 
-    if (!insertPosition) return ""; //not an xml (no closing tag)
+    if (!insertPosition) return "not an xml (no closing tag)";
 
 
     result.insert(insertPosition, signatureTemplate);
 
     if (!init && !initialize()) {
-        return {};//"xmlsec could not be initialized";
+        return { "xmlsec could not be initialized" };
     }
     init = true;
 
-    if (prvKey == nullptr) return{};
-    if (pem_x509.empty()) return{};
+    //xmlSecErrorsSetCallback(errorReprort);
+
+    if (prvKey == nullptr) return{ "No private key" };
+    if (pem_x509.empty()) return{ "No x509 certificate" };
 
     xmlChar* signedBuffer{ nullptr };
     int signedLength{ 0 };
@@ -215,7 +242,7 @@ std::string XmlSigner::signNhifMessage(const std::string& document, evp_pkey_st*
     /* load doc file */
     xmlDocPtr doc = xmlParseMemory(result.data(), result.size());
     if ((doc == NULL) || (xmlDocGetRootElement(doc) == NULL)) {
-        return {};//"Error: unable to parse file";
+        return { "Error: unable to parse file" };
     }
 
     xmlAttrPtr attr = xmlDocGetRootElement(doc)->properties;
@@ -224,13 +251,13 @@ std::string XmlSigner::signNhifMessage(const std::string& document, evp_pkey_st*
 
     xmlNodePtr signNode = xmlSecFindNode(xmlDocGetRootElement(doc), xmlSecNodeSignature, xmlSecDSigNs);
     if (signNode == NULL) {
-        return {};//"Error: start node not found";
+        return { "Error: start node not found" };
     }
 
     /* create signature context */
     xmlSecDSigCtxPtr dsigCtx = xmlSecDSigCtxCreate(NULL);
     if (dsigCtx == NULL) {
-        return {};//"Error: failed to create signature context\n";
+        return { "Error: failed to create signature context" };
     }
 
     //dsigCtx->enabledReferenceUris = xmlSecTransformUriTypeSameDocument;
@@ -238,6 +265,7 @@ std::string XmlSigner::signNhifMessage(const std::string& document, evp_pkey_st*
     dsigCtx->signKey = xmlSecKeyCreate();
 
     dsigCtx->signKey->value = xmlSecOpenSSLEvpKeyAdopt(prvKey);
+    dsigCtx->signKey->usage = xmlSecKeyUsageSign;
 
     if (
         xmlSecOpenSSLAppKeyCertLoadMemory(
@@ -248,12 +276,13 @@ std::string XmlSigner::signNhifMessage(const std::string& document, evp_pkey_st*
         )
 
     {
-        return {};//"Failed to load certificate"; }
+        return { "Failed to load certificate" };
     }
 
     /* sign the template */
     if (xmlSecDSigCtxSign(dsigCtx, signNode) < 0) {
-        return {};//"Error: signature failed\n";
+        ModalDialogBuilder::show_eIDAS_Warning();
+        return { "Error: signature failed" };
 
     }
 

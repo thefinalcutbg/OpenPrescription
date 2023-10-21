@@ -2,7 +2,7 @@
 #include "MedicationPresenter.h"
 #include "Database/DbPrescription.h"
 #include "Model/FreeFunctions.h"
-
+#include "Model/User.h"
 PrescriptionPresenter::PrescriptionPresenter(ITabView* tabView, TabPresenter* tabPresenter, std::shared_ptr<Patient> patient, long long rowId) :
 	TabInstance(tabView, TabType::Prescription, patient), 
 	view(tabView->perscriptionView()),
@@ -95,9 +95,9 @@ void PrescriptionPresenter::addPressed()
 
 void PrescriptionPresenter::editPressed(int idx)
 {
-	if (idx == -1 || m_prescription.NRN.size()) return;
+	if (idx < 0 || idx >= m_prescription.medicationGroup.size()) return;
 
-	MedicationPresenter p(m_prescription.medicationGroup[idx]);
+	MedicationPresenter p(m_prescription.medicationGroup[idx], m_prescription.NRN.size());
 
 	auto result = p.openDialog();
 
@@ -122,6 +122,37 @@ void PrescriptionPresenter::deletePressed(int idx)
 	view->setMedicationList(m_prescription.getMedList());
 
 	makeEdited();
+}
+
+void PrescriptionPresenter::eRxPressed()
+{
+	auto nrn = ModalDialogBuilder::inputDialog("НРН на рецептата:", "Зареждане на рецепта от eRx");
+
+	if (nrn.empty()) return;
+
+	if (DbPrescription::nrnExists(nrn)) {
+		ModalDialogBuilder::showMessage("Рецепта с това НРН вече съществува в базата данни");
+		return;
+	}
+
+	fetch_service.sendRequest(nrn, User::doctor().LPK, *patient,
+		[&](const Prescription& prescr) {
+
+			auto rowid = m_prescription.rowid;
+			auto patient_rowid = m_prescription.patient_rowid;
+			edited = true;
+
+			m_prescription = prescr;
+			m_prescription.rowid = rowid;
+			m_prescription.patient_rowid = patient_rowid;
+
+			save();
+
+			refreshTabName();
+
+			if (isCurrent()) setDataToView();
+		}
+	);
 }
 
 void PrescriptionPresenter::setFemaleProperties(bool pregnancy, bool breastfeeding)

@@ -11,6 +11,7 @@ PKCS11_CTX* ctx{ nullptr };
 
 std::vector<std::string> modules{
 	"C:\\Program Files\\SafeNet\\Authentication\\SAC\\x64\\IDPrimePKCS1164.dll",
+	"C:\\Windows\\System32\\OcsPKCS11Wrapper.dll",
 	"C:\\Windows\\System32\\cmP1164.dll",
 	"C:\\Windows\\System32\\bit4ipki.dll",
 	"C:\\Windows\\System32\\cmP11.dll",

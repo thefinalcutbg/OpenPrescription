@@ -3,6 +3,9 @@
 #include "View/ModalDialogBuilder.h"
 #include "Model/FreeFunctions.h"
 #include "TinyXML/tinyxml.h"
+#include "Model/Patient.h"
+
+#include <algorithm>
 
 bool EPrescription::Issue::sendRequest(const Prescription& prescr, const Patient& patient, std::function<void(const std::string&)> nrnCallback)
 {
@@ -172,16 +175,16 @@ void EPrescription::Cancel::parseReply(const std::string& reply)
 
 }
 
-bool EPrescription::Fetch::sendRequest(const std::string& nrn, std::function<void(EPrescription::Status s)> success)
+bool EPrescription::FetchDispense::sendRequest(const std::string& nrn, std::function<void(EPrescription::Status s)> callback)
 {
-	m_callback = success;
+	m_callback = callback;
 
 	std::string contents = bind("nrnPrescription", nrn);
 
 	return HisService::sendRequestToHis(contents);
 }
 
-void EPrescription::Fetch::parseReply(const std::string& reply)
+void EPrescription::FetchDispense::parseReply(const std::string& reply)
 {
 	auto errors = getErrors(reply);
 
@@ -229,3 +232,171 @@ std::string EPrescription::getStatusText(EPrescription::Status s)
 
 	return text[s];
 }
+
+
+bool EPrescription::eRxFetch::sendRequest(
+	const std::string& nrn,
+	const std::string& lpk,
+	const Patient& p,
+	decltype(m_callback) callback
+)
+{
+	m_callback = callback;
+
+	std::string contents;
+	contents += bind("nrnPrescription", nrn);
+	contents += bind("pmi", lpk);
+	contents += bind("identifierType", p.type);
+	contents += bind("identifier", p.id);
+
+	return HisService::sendRequestToHis(contents);
+}
+
+void EPrescription::eRxFetch::parseReply(const std::string& reply)
+{
+	auto errors = getErrors(reply);
+
+	if (errors.size()) {
+		ModalDialogBuilder::showError(errors);
+		m_callback = nullptr;
+		return;
+	}
+
+	TiXmlDocument doc;
+
+	doc.Parse(reply.data(), 0, TIXML_ENCODING_UTF8);
+
+	TiXmlHandle docHandle(&doc);
+
+	auto prescrXml = docHandle.
+		FirstChild().				//message
+		Child(1).					//contents
+		Child(1).					//results
+		FirstChild().ToElement();	//prescription
+
+
+	if (!prescrXml) {
+		m_callback = nullptr;
+		return;
+	}
+
+	if (getString(prescrXml, "category") != "T1") {
+		ModalDialogBuilder::showMessage(
+			"Не можете да зареждате рецепти различни от белите"
+		);
+
+		m_callback = nullptr;
+		return;
+	}
+
+
+	Prescription result;
+
+	result.NRN = getString(prescrXml, "nrnPrescription");
+	result.LRN = getString(prescrXml, "lrn");
+	result.date = getString(prescrXml, "authoredOn");
+	result.supplements = getString(prescrXml, "nhis:supplements");
+	result.dispensation.setTypeFromNhis(getInt(prescrXml, "dispensationType"));
+
+	if (result.dispensation.type != Dispensation::SingleUse) {
+		result.dispensation.setRepeatsFromNhis(getInt(prescrXml, "allowedRepeatsNumber"));
+	}
+
+	//Parsing medications
+	for (
+		auto medXml = prescrXml->FirstChildElement("nhis:group")->FirstChildElement("nhis:medication");
+		medXml != nullptr;
+		medXml = medXml->NextSiblingElement("nhis:medication")
+		)
+	{
+		auto& medication = result.medicationGroup.emplace_back(getInt(medXml, "medicationCode"));
+		medication.priority = static_cast<Medication::Priority>(getInt(medXml, "priority") - 1);
+		medication.quantity = getInt(medXml, "quantityValue");
+		medication.byForm = getBool(medXml, "isQuantityByForm");
+		medication.note = getString(medXml, "note");
+		medication.substitution = getBool(medXml, "isSubstitutionAllowed");
+
+		if (medXml->FirstChildElement("nhis:effectiveDosePeriod")) {
+			medication.dosePeriod = {
+				getString(medXml->FirstChildElement("nhis:effectiveDosePeriod"), "start"),
+				getString(medXml->FirstChildElement("nhis:effectiveDosePeriod"), "end"),
+			};
+		}
+
+		//Parsing dosage
+		for (
+			auto dosageXml = medXml->FirstChildElement("nhis:dosageInstruction");
+			dosageXml != nullptr;
+			dosageXml = dosageXml->NextSiblingElement("nhis:dosageInstruction")
+			)
+		{
+			auto& dosage = medication.dosage.emplace_back();
+
+			dosage.asNeeded = getBool(dosageXml, "asNeeded");
+			dosage.route = getInt(dosageXml, "route");
+			dosage.additionalInstructions = getString(dosageXml, "text");
+
+			//dose quantity polymorphism
+			std::string doseQuantityStr = getString(dosageXml, "doseQuantityCode");
+
+			bool isNumber = !doseQuantityStr.empty() &&
+				std::find_if(
+					doseQuantityStr.begin(),
+					doseQuantityStr.end(),
+					[](unsigned char c) { return !std::isdigit(c); }
+			) == doseQuantityStr.end();
+
+			if (isNumber) {
+				dosage.doseQuantity = getInt(dosageXml, "doseQuantityCode");
+			}
+			else {
+				dosage.doseQuantity = doseQuantityStr;
+			}
+
+			dosage.doseQuantity.value = getDouble(dosageXml, "doseQuantityValue");
+
+			dosage.frequency = getInt(dosageXml, "frequency");
+			if (!dosage.frequency) dosage.frequency = 1; //default value
+
+			dosage.period = {
+				getDouble(dosageXml, "period"),
+				getString(dosageXml, "periodUnit")
+			};
+
+			dosage.bounds = {
+				getDouble(dosageXml, "boundsDuration"),
+				getString(dosageXml, "boundsDurationUnit")
+			};
+
+			//parsing when
+
+			for (
+				auto whenXml = dosageXml->FirstChildElement("nhis:when");
+				whenXml != nullptr;
+				whenXml = whenXml->NextSiblingElement("nhis:when")
+				) {
+
+				dosage.when.addTag(whenXml->FirstAttribute()->IntValue());
+			}
+
+			dosage.when.setOffset(getInt(dosageXml, "offset"));
+
+		}
+
+	}
+
+	auto various = docHandle.
+		FirstChild("nhis:message").
+		FirstChild("nhis:contents").
+		FirstChild("nhis:results").
+		FirstChild("nhis:subject").
+		FirstChild("nhis:various").ToElement();
+
+	if (various) {
+		result.isPregnant = getBool(various, "isPregnant");
+		result.isBreastFeeding = getBool(various, "isBreastFeeding");
+	}
+
+	m_callback(result);
+}
+

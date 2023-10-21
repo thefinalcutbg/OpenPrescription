@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "OpenPrescription"
-#define MyAppVersion "0.8"
+#define MyAppVersion "0.9"
 #define MyAppPublisher "SalveoDent"
 #define MyAppURL "https://dinodent.bg/prescription/"
 #define MyAppExeName "OpenPrescription.exe"

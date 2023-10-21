@@ -18,6 +18,11 @@ private:
 
 protected:
 
+	bool getBool(TiXmlElement* parent, const std::string& tag);
+	std::string getString(TiXmlElement* parent, const std::string& tag);
+	int getInt(TiXmlElement* parent, const std::string& tag);
+	double getDouble(TiXmlElement* parent, const std::string& tag);
+
 	std::string subject(const Patient& p, bool isPregnant = false, bool isBreastfeeding = false);
 	std::string requester(bool includeNhifCode = false);
 

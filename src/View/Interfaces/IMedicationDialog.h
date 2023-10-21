@@ -11,6 +11,7 @@ public:
 	virtual void setFormLabel(const std::string& formName) = 0;
 	virtual void setDosageList(const std::vector<std::string> dosageList) = 0;
 	virtual bool fieldsAreValid() = 0;
+	virtual void setReadOnly() = 0;
 	virtual void setMedication(const Medication& m) = 0;
 	virtual void closeUi() = 0;
 };

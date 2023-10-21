@@ -12,7 +12,7 @@ long long DbPrescription::insert(const Prescription& p)
 
         "INSERT INTO prescription ("
         "patient_rowid, lrn, nrn, date, dispensation, "
-        "repeats, supplements, lpk, is_pregnant, is_breastfeeding, rzi) "
+        "repeats, supplements, lpk, rzi, is_pregnant, is_breastfeeding) "
         "VALUES (?,?,?,?,?,?,?,?,?,?,?)"
     );
 
@@ -24,9 +24,9 @@ long long DbPrescription::insert(const Prescription& p)
     db.bind(6, static_cast<int>(p.dispensation.repeats));
     db.bind(7, p.supplements);
     db.bind(8, User::doctor().LPK);
-    db.bind(9, p.isPregnant);
-    db.bind(10, p.isBreastFeeding);
-    db.bind(11, User::doctor().RZI);
+    db.bind(9, User::doctor().RZI);
+    db.bind(10, p.isPregnant);
+    db.bind(11, p.isBreastFeeding);
 
     bool success = db.execute();
 
@@ -156,6 +156,7 @@ bool DbPrescription::update(const Prescription& p)
     Db db(
         "UPDATE prescription SET "
         "nrn=?,"
+        "lrn=?,"
         "date=?,"
         "dispensation=?,"
         "repeats=?,"
@@ -166,13 +167,14 @@ bool DbPrescription::update(const Prescription& p)
     );
 
     db.bind(1, p.NRN);
-    db.bind(2, p.date.to8601());
-    db.bind(3, p.dispensation.type);
-    db.bind(4, p.dispensation.repeats);
-    db.bind(5, p.supplements);
-    db.bind(6, p.isPregnant);
-    db.bind(7, p.isBreastFeeding);
-    db.bind(8, p.rowid);
+    db.bind(2, p.LRN);
+    db.bind(3, p.date.to8601());
+    db.bind(4, p.dispensation.type);
+    db.bind(5, p.dispensation.repeats);
+    db.bind(6, p.supplements);
+    db.bind(7, p.isPregnant);
+    db.bind(8, p.isBreastFeeding);
+    db.bind(9, p.rowid);
 
     bool success = db.execute();
 
@@ -222,4 +224,19 @@ bool DbPrescription::update(const Prescription& p)
     }
 
     return success;
+}
+
+bool DbPrescription::nrnExists(const std::string& nrn)
+{
+    if (nrn.empty()) return false;
+
+    Db db(
+        "SELECT COUNT(*) FROM prescription WHERE nrn=?"
+    );
+
+    db.bind(1, nrn);
+
+    while (db.hasRows()) return db.asBool(0);
+
+    return false;
 }

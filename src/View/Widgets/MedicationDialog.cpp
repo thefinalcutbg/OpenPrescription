@@ -81,6 +81,23 @@ void MedicationDialog::setDosageList(const std::vector<std::string> dosageList)
 	ui.dosageList->setCurrentIndex(dosageIdx);
 }
 
+void MedicationDialog::setReadOnly()
+{
+	QList<QWidget*> widgets = this->findChildren<QWidget*>();
+
+	foreach(QWidget * widget, widgets)
+	{
+		auto label = qobject_cast<QLabel*>(widget);
+
+		if (label) continue;
+
+		widget->setEnabled(false);
+	}
+
+	ui.cancelButton->setEnabled(true);
+	ui.okButton->setEnabled(true);
+}
+
 bool MedicationDialog::fieldsAreValid()
 {
 	if (!ui.medicationEdit->validateInput()) {

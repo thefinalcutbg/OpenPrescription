@@ -77,7 +77,7 @@ std::string HisService::signMessage(const std::string& message)
 		};
 	}
 
-	return XmlSigner::signNhifMessage(message, signer.takePrivateKey(), signer.pem_x509cert());
+	return XmlSigner::signHisMessage(message, signer.takePrivateKey(), signer.pem_x509cert());
 }
 
 
@@ -263,4 +263,40 @@ std::string HisService::getErrors(const std::string& reply)
 
 	return std::string{};
 
+}
+
+bool HisService::getBool(TiXmlElement* parent, const std::string& tag)
+{
+	auto element = parent->FirstChildElement(std::string{"nhis:"} + tag);
+
+	if (!element || !element->FirstAttribute()) return false;
+
+	return element->FirstAttribute()->ValueStr() == "true";
+}
+
+std::string HisService::getString(TiXmlElement* parent, const std::string& tag)
+{
+	auto element = parent->FirstChildElement(std::string{"nhis:"} + tag);
+
+	if (!element || !element->FirstAttribute()) return "";
+
+	return element->FirstAttribute()->ValueStr();
+}
+
+int HisService::getInt(TiXmlElement* parent, const std::string& tag)
+{
+	auto element = parent->FirstChildElement(std::string{"nhis:"} + tag);
+
+	if (!element || !element->FirstAttribute()) return 0;
+
+	return element->FirstAttribute()->IntValue();
+}
+
+double HisService::getDouble(TiXmlElement* parent, const std::string& tag)
+{
+	auto element = parent->FirstChildElement(std::string{"nhis:"} + tag);
+
+	if (!element || !element->FirstAttribute()) return 0.0;
+
+	return element->FirstAttribute()->DoubleValue();
 }

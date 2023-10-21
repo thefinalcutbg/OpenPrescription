@@ -17,6 +17,7 @@
         <file>icon_his.png</file>
         <file>icon_question.png</file>
         <file>icon_copy.png</file>
+        <file>icon_erx.png</file>
     </qresource>
     <qresource prefix="/fonts">
         <file>font_RobotoCondensedRegular.ttf</file>
@@ -35,5 +36,8 @@
     </qresource>
     <qresource prefix="/db">
         <file>dbSchema.txt</file>
+    </qresource>
+    <qresource prefix="/various">
+        <file>eIDAS.txt</file>
     </qresource>
 </RCC>

@@ -35,5 +35,7 @@ namespace ModalDialogBuilder
 	void showMessage(const std::string& message);
 	std::string pinPromptDialog(const std::string& pem);
 	std::string inputDialog(const std::string& text, const std::string& title, bool asPassword = false);
+
+	void show_eIDAS_Warning();
 };
 
