@@ -3,6 +3,7 @@
 #include "View/uiComponents/LineEdit.h"
 #include "Model/Prescription/Dosage.h"
 
+
 DosageDialog::DosageDialog(DosagePresenter* p, QWidget* parent) :
 	presenter(p), QDialog(parent)
 {
@@ -13,39 +14,41 @@ DosageDialog::DosageDialog(DosagePresenter* p, QWidget* parent) :
 	ui.offsetCheck->hide();
 	ui.offsetSpin->hide();
 
+	ui.addWhenButton->setDisabled(true);
+
 	connect(ui.asNeededCheck, &QCheckBox::stateChanged, [=] {
 		presenter->setAsNeeded(ui.asNeededCheck->isChecked());
 		});
 
 	connect(ui.offsetCheck, &QCheckBox::stateChanged, [=] {
-			bool enabled = ui.offsetCheck->isChecked();
-			presenter->enableOffset(enabled);
-			ui.offsetSpin->setEnabled(enabled);
+		bool enabled = ui.offsetCheck->isChecked();
+		presenter->enableOffset(enabled);
+		ui.offsetSpin->setEnabled(enabled);
 		});
 
 	connect(ui.doseFormCombo->lineEdit(), &QLineEdit::textChanged, [=](const QString& text) {
-		     presenter->formNameChanged(text.toStdString());
+		presenter->formNameChanged(text.toStdString());
 		});
 
 
 	connect(ui.additionalEdit, &QLineEdit::textChanged, [=](const QString& text) {
-			presenter->additionalInstructionsChanged(text.toStdString());
+		presenter->additionalInstructionsChanged(text.toStdString());
 		});
 
 
 	connect(ui.doseSpin, &QDoubleSpinBox::valueChanged, [=](double value) {
-			presenter->doseQuantityValueChanged(value);
+		presenter->doseQuantityValueChanged(value);
 		});
 
 	connect(ui.offsetSpin, &QSpinBox::valueChanged, [=](int value) {
-			presenter->offsetChanged(value);
+		presenter->offsetChanged(value);
 
 		});
 
 	connect(ui.periodSpin, &QDoubleSpinBox::valueChanged, [=](double value) { presenter->periodValueChanged(value); });
 	connect(ui.boundsSpin, &QDoubleSpinBox::valueChanged, [=](double value) { presenter->boundsValueChanged(value); });
-	connect(ui.frequencySpin, &QSpinBox::valueChanged, [=](int value) { 
-		presenter->frequencyChanged(value); 
+	connect(ui.frequencySpin, &QSpinBox::valueChanged, [=](int value) {
+		presenter->frequencyChanged(value);
 
 		/*
 		ui.frequencyLabel->setText(
@@ -55,13 +58,13 @@ DosageDialog::DosageDialog(DosagePresenter* p, QWidget* parent) :
 			" пъти на "
 		);
 		*/
-		
-	});
 
-	connect(ui.periodCombo, &QComboBox::currentIndexChanged, [=](int idx) { presenter->periodUnitChanged(idx);});
-	connect(ui.boundsCombo, &QComboBox::currentIndexChanged, [=](int idx) { presenter->boundsUnitChanged(idx);});
+		});
 
-	connect(ui.okButton, &QPushButton::clicked, [=] { presenter->okPressed();});
+	connect(ui.periodCombo, &QComboBox::currentIndexChanged, [=](int idx) { presenter->periodUnitChanged(idx); });
+	connect(ui.boundsCombo, &QComboBox::currentIndexChanged, [=](int idx) { presenter->boundsUnitChanged(idx); });
+
+	connect(ui.okButton, &QPushButton::clicked, [=] { presenter->okPressed(); });
 
 	LineEdit* routeLine = new LineEdit(ui.routeCombo);
 	routeLine->setErrorLabel(ui.errorLabel);
@@ -69,20 +72,15 @@ DosageDialog::DosageDialog(DosagePresenter* p, QWidget* parent) :
 	ui.routeCombo->setLineEdit(routeLine);
 
 	connect(ui.routeCombo->lineEdit(), &QLineEdit::textChanged, [=](const QString& text) {
-		if(static_cast<LineEdit*>(ui.routeCombo->lineEdit())->validateInput())
-		presenter->routeChanged(text.toStdString());
-	});
+		if (static_cast<LineEdit*>(ui.routeCombo->lineEdit())->validateInput())
+			presenter->routeChanged(text.toStdString());
+		});
 
 	LineEdit* whenLine = new LineEdit(ui.whenCombo);
 	whenLine->setErrorLabel(ui.errorLabel);
 	whenLine->setInputValidator(&when_validator);
 	ui.whenCombo->setLineEdit(whenLine);
 
-
-
-	connect(ui.whenCombo->lineEdit(), &QLineEdit::returnPressed, [=] {
-			ui.addWhenButton->click();
-		});
 
 	connect(ui.whenCombo->lineEdit(), &QLineEdit::textChanged, [=] {
 		static_cast<LineEdit*>(ui.whenCombo->lineEdit())->validateInput() ?
@@ -91,13 +89,23 @@ DosageDialog::DosageDialog(DosagePresenter* p, QWidget* parent) :
 			ui.whenCombo->lineEdit()->setStyleSheet("border: 1px solid red");
 		});
 
-	connect(ui.addWhenButton, &QPushButton::clicked, [=]{
+	connect(ui.addWhenButton, &QPushButton::clicked, [=] {
 
 		presenter->whenTagAdded(ui.whenCombo->lineEdit()->text().toStdString());
 
-	});
+		});
 
-	connect(ui.cancelButton, &QPushButton::clicked, [&] {close();});
+	connect(ui.whenCombo->lineEdit(), &QLineEdit::returnPressed, [=] {
+
+		presenter->whenTagAdded(ui.whenCombo->lineEdit()->text().toStdString());
+		});
+
+
+	connect(whenLine, &QLineEdit::textChanged, [=](const QString& text) {
+		ui.addWhenButton->setEnabled(whenLine->isValid() && text.size());
+		});
+
+	connect(ui.cancelButton, &QPushButton::clicked, [&] {close(); });
 
 	presenter->setView(this);
 }
@@ -105,7 +113,7 @@ DosageDialog::DosageDialog(DosagePresenter* p, QWidget* parent) :
 DosageDialog::~DosageDialog()
 {}
 
-void DosageDialog::setBoundsList(const std::vector<std::string>&list)
+void DosageDialog::setBoundsList(const std::vector<std::string>& list)
 {
 	if (!ui.boundsCombo->count()) {
 
@@ -121,7 +129,7 @@ void DosageDialog::setBoundsList(const std::vector<std::string>&list)
 
 void DosageDialog::setPeriodList(const std::vector<std::string>& list)
 {
-	
+
 	if (!ui.periodCombo->count()) {
 
 		for (auto& s : list) ui.periodCombo->addItem(s.c_str());
@@ -182,7 +190,6 @@ void DosageDialog::setRouteString(const std::string& route)
 
 void DosageDialog::setWhenTags(const std::vector<std::string>& tags, bool offsetAllowed)
 {
-
 	ui.whenCombo->clearEditText();
 
 	while (ui.tagLayout->count())
@@ -192,25 +199,33 @@ void DosageDialog::setWhenTags(const std::vector<std::string>& tags, bool offset
 
 	for (int i = 0; i < tags.size(); i++) {
 
-		QPushButton* tagButton = new QPushButton(tags[i].c_str(), this);
+		QString text = tags[i].c_str();
+		text.append(" ");
+
+		QPushButton* tagButton = new QPushButton(text, this);
 
 		tagButton->setToolTip("Премахни");
 
+		tagButton->setIcon(QIcon(":/icons/icon_remove.png"));
+		tagButton->setLayoutDirection(Qt::RightToLeft);
+
 		ui.tagLayout->addWidget(tagButton);
 
-		QObject::connect(tagButton, &QPushButton::clicked, [=] {presenter->removeTag(i);});
+		QObject::connect(tagButton, &QPushButton::clicked, [=] {presenter->removeTag(i); });
 
 	}
 
 	ui.offsetSpin->setHidden(!offsetAllowed);
 	ui.offsetCheck->setHidden(!offsetAllowed);
+
+	ui.whenCombo->setFocus();
 }
 
 bool DosageDialog::fieldsAreValid()
 {
-	if(!static_cast<LineEdit*>(
+	if (!static_cast<LineEdit*>(
 		ui.routeCombo->lineEdit())->validateInput()
-	)
+		)
 	{
 		ui.routeCombo->setFocus();
 		return false;
@@ -226,7 +241,6 @@ bool DosageDialog::fieldsAreValid()
 
 void DosageDialog::setParsed(const std::string& parsed)
 {
-
 	QString parsedText = "Текстов резултат: <b>";
 	parsedText.append(parsed.c_str());
 	parsedText.append("</b>");
@@ -266,7 +280,7 @@ void DosageDialog::setDosage(const Dosage& d)
 
 	setWhenFormCompletionList(d.when.tagsList());
 	setWhenTags(d.when.getTags(), d.when.offsetAllowed());
-	
+
 	auto offset = d.when.getOffset();
 
 	ui.offsetCheck->setChecked(offset);

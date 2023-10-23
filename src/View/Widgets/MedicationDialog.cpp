@@ -11,6 +11,9 @@ MedicationDialog::MedicationDialog(MedicationPresenter* p, QWidget* parent)
 	ui.medicationEdit->setCompletions(Medication::names());
 	ui.medicationEdit->setInputValidator(&nameValidator);
 
+	ui.deleteButton->setDisabled(true);
+	ui.editButton->setDisabled(true);
+
 	connect(ui.quantity, &QSpinBox::valueChanged, [&] { commonDataChanged(); });
 	connect(ui.quantityValue, &QComboBox::currentIndexChanged, [&] { commonDataChanged(); });
 	connect(ui.substitutionCheck, &QCheckBox::stateChanged, [&](bool state) { commonDataChanged(); });
@@ -48,7 +51,12 @@ MedicationDialog::MedicationDialog(MedicationPresenter* p, QWidget* parent)
 	connect(ui.deleteButton, &QPushButton::clicked, [=] { presenter->deleteDosage(ui.dosageList->currentRow());});
 	connect(ui.okButton, &QPushButton::clicked, [&] {presenter->okPressed();});
 	connect(ui.cancelButton, &QPushButton::clicked, [&] {close();});
-	
+	connect(ui.dosageList, &QListWidget::itemSelectionChanged, [&] {
+
+		bool noSelection = ui.dosageList->selectedItems().empty();
+		ui.editButton->setDisabled(noSelection);
+		ui.deleteButton->setDisabled(noSelection);
+		});
 	presenter->setView(this);
 }
 
@@ -70,15 +78,13 @@ void MedicationDialog::setFormLabel(const std::string& formName)
 
 void MedicationDialog::setDosageList(const std::vector<std::string> dosageList)
 {
-	auto dosageIdx = ui.dosageList->currentIndex();
-
 	ui.dosageList->clear();
 
 	for (auto dosage : dosageList) {
 		ui.dosageList->addItem(dosage.c_str());
 	}
 
-	ui.dosageList->setCurrentIndex(dosageIdx);
+	ui.dosageList->setCurrentRow(ui.dosageList->count() - 1);
 }
 
 void MedicationDialog::setReadOnly()
@@ -104,7 +110,7 @@ bool MedicationDialog::fieldsAreValid()
 		ui.medicationEdit->setFocus();
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -119,14 +125,14 @@ void MedicationDialog::commonDataChanged()
 
 }
 
-void MedicationDialog::setMedication(const Medication & m)
+void MedicationDialog::setMedication(const Medication& m)
 {
 	ui.medicationEdit->setText(m.name().c_str());
 
 	ui.medicationEdit->setValidAppearence(true);
 
-	QSignalBlocker b[6]{ 
-		QSignalBlocker{ui.substitutionCheck}, 
+	QSignalBlocker b[6]{
+		QSignalBlocker{ui.substitutionCheck},
 		QSignalBlocker{ui.quantity},
 		QSignalBlocker{ui.priorityCombo},
 		QSignalBlocker{ui.periodGroup},
