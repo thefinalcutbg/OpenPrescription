@@ -95,6 +95,12 @@ bool UpdateMedications::parseNumenclature(const std::string& reply)
 
 	Medication::initialize();
 
+	if (show_conformation) {
+		std::string msg = "Номенклатурата е заредена. Налични лекарства: ";
+		msg += std::to_string(Medication::names().size());
+		ModalDialogBuilder::showMessage(msg);
+	}
+
 	return true;
 
 }

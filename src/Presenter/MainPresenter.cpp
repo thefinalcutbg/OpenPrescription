@@ -62,6 +62,12 @@ void MainPresenter::showPrescriptions()
     m_listSelector.openDialog(TabType::Prescription);
 }
 
+void MainPresenter::updateMedications()
+{
+    num_update_service.show_conformation = true;
+    num_update_service.update();
+}
+
 bool MainPresenter::save()
 {
     if(m_tabPresenter.currentTab())

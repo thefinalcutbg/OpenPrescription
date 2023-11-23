@@ -31,7 +31,7 @@
      <number>0</number>
     </property>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0,0,0">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0,0,0,0">
       <property name="spacing">
        <number>6</number>
       </property>
@@ -59,6 +59,28 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="IconButton" name="medicationUpdate">
+        <property name="minimumSize">
+         <size>
+          <width>35</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>35</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Зареди номенклатурата на медикаментите от НСЦРЛП</string>
+        </property>
+        <property name="text">
+         <string>НСЦРЛП</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="HalfRoundedButton" name="newButton">

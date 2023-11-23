@@ -13,52 +13,23 @@ OpenPrescription::OpenPrescription(QWidget* parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
-    // showMaximized();
-   // ui.perscrButton->setIcon(QIcon(":/icons/icon_prescr.png"));
-   // ui.saveButton->setIcon(QIcon(":/icons/icon_save.png"));
-   // ui.openButton->setIcon(QIcon(":/icons/icon_open.png"));
+
     ui.aboutButton->setIcon(QIcon(":/icons/icon_question.png"));
+    ui.medicationUpdate->setIcon(QIcon(":/icons/icon_refresh.png"));
+    
     ui.prescrButton->setPosition(HalfRoundedButton::Position::Alone);
     ui.patientButton->setPosition(HalfRoundedButton::Position::Alone);
     ui.newButton->setPosition(HalfRoundedButton::Position::Alone);
     ui.userButton->setPosition(HalfRoundedButton::Position::Alone);
+  //  ui.medicationUpdate->setPosition(HalfRoundedButton::Position::Alone);
 
-   // connect(ui.saveButton, &QPushButton::clicked, [&] { presenter.save(); });
     connect(ui.patientButton, &QPushButton::clicked, [&] {presenter.showPatients(); });
     connect(ui.prescrButton, &QPushButton::clicked, [&] {presenter.showPrescriptions(); });
     connect(ui.newButton, &QPushButton::clicked, [&] { presenter.newPerscriptionPressed(); });
     connect(ui.userButton, &QPushButton::clicked, [&] { presenter.editDoctor(); });
     connect(ui.aboutButton, &QPushButton::clicked, [&] { AboutDialog d; d.exec(); });
-/*
-    setStyleSheet(
-        "QMenu{"
-        " background-color: white;"
-        " }"
-
-        "   QMenu::item {"
-        "   padding: 2px 20px 2px 20px;"
-        "  border: 1px solid transparent; "// reserve space for selection border
-        "   spacing: 20px;"
-        "    }"
-
-
-        "  QMenu::item:selected {"
-        "       border-color: darkblue;"
-        "        background: rgb(53, 120, 191, 150);"
-        "       color:white;"
-        "      }"
-
-        "    QMenu::separator {"
-        "       height: 2px;"
-        "         margin: 2px 5px 2px 4px;"
-        "      }"
-
-        "     QMenu::indicator {"
-        "       width: 20px;"
-        "       height: 13px;"
-        "    }"
-    );
- */
+    connect(ui.medicationUpdate, &QPushButton::clicked, [&] { presenter.updateMedications(); });
+    
     presenter.setView(this);
 }
 

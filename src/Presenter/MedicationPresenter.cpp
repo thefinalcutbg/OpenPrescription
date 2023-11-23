@@ -63,7 +63,7 @@ void MedicationPresenter::addDosage()
 std::optional<Medication> MedicationPresenter::openDialog()
 {
 	if (Medication::names().empty()) {
-		ModalDialogBuilder::showMessage("Първо заредете номенклатурата за лекарствата от Настройки");
+		ModalDialogBuilder::showMessage("Първо заредете номенклатурата на медикаментите от НСЦРЛП");
 		return std::optional<Medication>();
 	}
 

@@ -21,6 +21,7 @@ public:
 	void newPerscriptionPressed();
 	void showPatients();
 	void showPrescriptions();
+	void updateMedications();
 	bool save();
 	void userSettingsPressed();
 	//returns false when user selects cancel, otherwise returns true
