@@ -1,5 +1,10 @@
 #include "DbUpdater.h"
 #include "Database/Database.h"
+#include "Resources.h"
+
+#include <unordered_map>
+#include <vector>
+#include <JsonCpp/json.h>
 
 namespace DbMigrations {	
 
@@ -35,6 +40,50 @@ namespace DbMigrations {
 		db.execute("ALTER TABLE prescription ADD COLUMN is_breastfeeding INTEGER");
 		db.execute("PRAGMA user_version = 3");
 	}
+
+	void migrateTo4()
+	{
+		if (Db::version() != 3) return;
+
+		Db db;
+
+		Json::Value ekatteJson;
+
+		Json::Reader().parse(Resources::citiesJson(), ekatteJson);
+
+		std::unordered_map<int, int> ekatte_map;
+
+		for (auto& val : ekatteJson)
+		{
+			if (!val.isMember("wrong_ekatte")) continue;
+
+			ekatte_map[val["wrong_ekatte"].asInt()] = val["ekatte"].asInt();
+		}
+
+		std::vector<std::pair<long long, int>> rowid_ekatte;
+
+		Db db("SELECT rowid, ekatte FROM patient");
+
+		while (db.hasRows()) {
+
+			long long rowid = db.asRowId(0);
+			int ekatte = db.asInt(1);
+
+			if (!ekatte_map.count(ekatte)) continue;
+
+			rowid_ekatte.push_back(std::make_pair(rowid, ekatte_map[ekatte]));
+		}
+
+		for (auto& pair : rowid_ekatte)
+		{
+			db.newStatement("UPDATE patient SET ekatte=? WHERE rowid=?");
+			db.bind(1, pair.second);
+			db.bind(2, pair.first);
+			db.execute();
+		}
+
+		db.execute("PRAGMA user_version = 4");
+	}
 };
 
 void DbUpdater::updateDb()
@@ -42,4 +91,5 @@ void DbUpdater::updateDb()
 	DbMigrations::migrateTo1();
 	DbMigrations::migrateTo2();
 	DbMigrations::migrateTo3();
+	DbMigrations::migrateTo4();
 }

@@ -19,13 +19,17 @@ public:
 	static bool isValidStr(const std::string& cityName);
 
 	Ekatte() {}
+	Ekatte(int rhif, int healthRegion);
 	Ekatte(int idx);
 	Ekatte(const std::string& cityString);
 	std::string getRhif() const;
 	std::string getHealthRegion() const;
 	std::string getString(bool prefix = true) const;
 	std::string ekatte() const;
+	bool isValid() const;
+	bool isUnfav() const;
 	int getIdxAsInt() const { return ekatteIdx; }
+	const std::string& getRegionCode() const;
 	static const std::unordered_map<std::string, int>& cityNameToIdx();
 };
 
