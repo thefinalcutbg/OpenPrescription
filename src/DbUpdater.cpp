@@ -45,8 +45,6 @@ namespace DbMigrations {
 	{
 		if (Db::version() != 3) return;
 
-		Db db;
-
 		Json::Value ekatteJson;
 
 		Json::Reader().parse(Resources::citiesJson(), ekatteJson);

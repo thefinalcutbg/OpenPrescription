@@ -13,6 +13,11 @@ PrescriptionView::PrescriptionView(QWidget* parent)
 	ui.editButton->setIcon(QIcon(":/icons/icon_edit.png"));
 	ui.eRxButton->setIcon(QIcon(":/icons/icon_erx.png"));
 
+	ui.addButton->setHoverColor(Theme::mainBackgroundColor);
+	ui.deleteButton->setHoverColor(Theme::mainBackgroundColor);
+	ui.editButton->setHoverColor(Theme::mainBackgroundColor);
+	ui.eRxButton->setHoverColor(Theme::mainBackgroundColor);
+
 	ui.medicationTable->setModel(&medModel);
 
 	ui.medicationTable->setMedicationLayot();
