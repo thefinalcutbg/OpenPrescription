@@ -15,7 +15,7 @@ bool Medication::initialize()
     Json::Reader reader;
     Json::Value jsonForms;
 
-    reader.parse(Resources::fromPath(":/style/json_medicationForms.json"), jsonForms);
+    reader.parse(Resources::fromPath(":/json/json_medicationForms.json"), jsonForms);
     s_medForms = std::vector<std::string>(jsonForms.size(), std::string());
 
     for (auto& pair : jsonForms)

@@ -7,7 +7,7 @@
 #include <JsonCpp/json.h>
 #include "View/Widgets/UpdateDownloader.h"
 
-constexpr int programVersion = 11;
+constexpr int programVersion = 12;
 
 bool UpdateService::restartForUpdate()
 {

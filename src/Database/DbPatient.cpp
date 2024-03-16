@@ -66,6 +66,9 @@ Patient DbPatient::get(std::string patientID, int type)
 
     Patient patient;
 
+    patient.id = patientID;
+    patient.type = type;
+
     for (Db db(query); db.hasRows();)
     {
         patient.rowid = db.asRowId(0),
@@ -78,6 +81,11 @@ Patient DbPatient::get(std::string patientID, int type)
         patient.LastName = db.asString(7);
         patient.city = Ekatte(db.asInt(8));
         patient.phone = db.asString(9);
+    }
+
+    if (patient.type == 1) {
+        patient.sex = Patient::getSexFromEgn(patient.id);
+        patient.birth = Date::getBirthdateFromEgn(patient.id);
     }
 
     return patient;
@@ -103,6 +111,11 @@ Patient DbPatient::get(long long rowid)
         patient.city = db.asInt(8);
         patient.phone = db.asString(9);
 
+    }
+
+    if (patient.rowid && patient.type == 1) {
+        patient.sex = Patient::getSexFromEgn(patient.id);
+        patient.birth = Date::getBirthdateFromEgn(patient.id);
     }
 
     return patient;

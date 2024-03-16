@@ -10,7 +10,12 @@ PatientDialogPresenter::PatientDialogPresenter(const Patient& patient) :
 	m_patient(patient),
 	rowid(patient.rowid),
 	view(nullptr)
-{}
+{
+	if (patient.type == 1) {
+		m_patient->sex = Patient::getSexFromEgn(patient.id);
+		m_patient->birth = Date::getBirthdateFromEgn(patient.id);
+	}
+}
 
 std::optional<Patient> PatientDialogPresenter::open()
 {
@@ -96,30 +101,16 @@ void PatientDialogPresenter::accept()
 
 void PatientDialogPresenter::searchDbForPatient(int type)
 {
-	
 	std::string patientId = view->lineEdit(id)->getText();
 
 	Patient patient = DbPatient::get(patientId, type);
 
-	if (patient.rowid == 0)
-	{
-		patient.id = patientId;
-		patient.type = type;
-
-		if (patient.type == 1)
-		{
-			patient.birth = Date::getBirthdateFromEgn(patient.id);
-			patient.sex = Patient::getSexFromEgn(patientId);
-		}
-	}
-	else
+	if (patient.rowid)
 	{
 		rowid = patient.rowid;
 	}
 	
-
 	setPatientToView(patient);
-	
 }
 
 
