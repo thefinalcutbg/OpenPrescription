@@ -33,5 +33,5 @@ See the [INSTALL](INSTALL.md) file
 Created by [@TheFinalCut](https://github.com/thefinalcutbg) - feel free to contact me!
 
 ## License
-This project is open source and available under the MIT license
+This project is open source and available under the GPL-3.0 license
 
