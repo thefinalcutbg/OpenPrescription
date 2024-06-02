@@ -182,64 +182,6 @@ void NetworkManager::sendRequestToHisNoAuth(AbstractReplyHandler* handler, const
         });
 }
 
-void NetworkManager::sendRequestToNra(const std::string xmlRequest, AbstractReplyHandler* handler)
-{
-    auto manager = getManager();
-
-    handlers.insert(handler);
-
-    QNetworkRequest request(QUrl("https://nraapp03.nra.bg:4445/nhifrcz/NhifStatus5Port"));
-    request.setSslConfiguration(QSslConfiguration::defaultConfiguration());
-    request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader, "application/xml;charset=\"utf-8\"");
-    request.setRawHeader("accept", "\"application/xml\"");
-    
-    auto reply = manager->post(request, xmlRequest.data());
-    
-
-    QApplication::setOverrideCursor(Qt::BusyCursor);
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred,
-        [=](QNetworkReply::NetworkError code)
-        {
-            qDebug() << "ReplyError: " << code;
-        }
-    );
-
-    QObject::connect(reply, &QNetworkReply::finished,
-        [=] {
-
-            QApplication::restoreOverrideCursor();
-
-            if (handlers.count(handler) == 0) return;
-            unsubscribeHandler(handler);
-            
-
-            std::string replyString = reply->readAll().toStdString();
-
-            if (replyString.empty() || replyString[1] == '!') {
-                replyString.clear();
-            }
-
-            handler->getReply(replyString);
-
-            reply->deleteLater();
-
-        });
-
-    QObject::connect(reply, &QNetworkReply::sslErrors, [=] {
-
-            QApplication::restoreOverrideCursor();
-
-            ModalDialogBuilder::showError("Неуспешна автентификация");
-            handler->getReply("");
-            NetworkManager::unsubscribeHandler(handler);
-            reply->deleteLater();
-
-        });
-
-
-}
-
 void NetworkManager::requestChallenge()
 {
 

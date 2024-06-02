@@ -28,11 +28,6 @@ namespace NetworkManager
 		const std::string& urlAndServicePath
 	);
 
-	void sendRequestToNra(
-		const std::string xmlRequest, 
-		AbstractReplyHandler* handler
-	);
-
 	void requestChallenge();
 	void requestToken(const std::string& signedChallenge);
 

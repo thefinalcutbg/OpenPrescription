@@ -26,7 +26,14 @@ struct Doctor
 	}
 
 	std::string RHIF() const {
-		return RZI.substr(0, 2);
+		
+		auto firstTwoDigits = std::stoi(RZI.substr(0, 2));
+
+		if (firstTwoDigits > 28) {
+			firstTwoDigits -= 30;
+		}
+
+		return std::to_string(firstTwoDigits);
 	}
 
 };
