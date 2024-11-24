@@ -184,6 +184,7 @@
     <ClCompile Include="src\View\uiComponents\TileButton.cpp" />
     <ClCompile Include="src\View\uiComponents\UserButton.cpp" />
     <ClCompile Include="src\View\Widgets\AboutDialog.cpp" />
+    <ClCompile Include="src\View\Widgets\MedicationTemplateDialog.cpp" />
     <ClCompile Include="src\View\Widgets\SelectorDialog.cpp" />
     <ClCompile Include="src\View\Widgets\DoctorSettingsDialog.cpp" />
     <ClCompile Include="src\View\Widgets\DosageDialog.cpp" />
@@ -293,6 +294,7 @@
     <ClInclude Include="src\View\Interfaces\IPrescriptionView.h" />
     <ClInclude Include="src\View\Interfaces\ITabView.h" />
     <ClInclude Include="src\View\ModalDialogBuilder.h" />
+    <QtMoc Include="src\View\Widgets\MedicationTemplateDialog.h" />
     <QtMoc Include="src\View\Widgets\AboutDialog.h" />
     <QtMoc Include="src\View\Widgets\SpecialtyDialog.h" />
     <QtMoc Include="src\View\Widgets\DoctorSettingsDialog.h" />
@@ -336,6 +338,7 @@
     <QtUic Include="src\View\SubWidgets\PatientTileInfo.ui" />
     <QtUic Include="src\View\SubWidgets\TabTitle.ui" />
     <QtUic Include="src\View\Widgets\AboutDialog.ui" />
+    <QtUic Include="src\View\Widgets\MedicationTemplateDialog.ui" />
     <QtUic Include="src\View\Widgets\SelectorDialog.ui" />
     <QtUic Include="src\View\Widgets\DoctorSettingsDialog.ui" />
     <QtUic Include="src\View\Widgets\DosageDialog.ui" />

@@ -82,6 +82,17 @@ namespace DbMigrations {
 
 		db.execute("PRAGMA user_version = 4");
 	}
+
+	void migrateTo5()
+	{
+		if (Db::version() != 4) return;
+
+		Db db;
+
+		db.execute("CREATE TABLE medication_template (rowid INTEGER PRIMARY KEY NOT NULL, numMed_rowid INTEGER NOT NULL, is_form BOOLEAN NOT NULL, quantity INT NOT NULL, priority INT, substitution BOOLEAN, notes VARCHAR (2000), dosage TEXT);");
+
+		db.execute("PRAGMA user_version = 5");
+	}
 };
 
 void DbUpdater::updateDb()
@@ -90,4 +101,5 @@ void DbUpdater::updateDb()
 	DbMigrations::migrateTo2();
 	DbMigrations::migrateTo3();
 	DbMigrations::migrateTo4();
+	DbMigrations::migrateTo5();
 }

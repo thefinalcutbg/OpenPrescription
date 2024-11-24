@@ -22,7 +22,7 @@ void ModalDialogBuilder::openDialog(ListSelectorPresenter* p)
 
 void ModalDialogBuilder::openDialog(MedicationPresenter* p)
 {
-	MedicationDialog d(p);
+	MedicationDialog d(*p);
 	d.exec();
 }
 

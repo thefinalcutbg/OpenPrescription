@@ -19,6 +19,7 @@
         <file>icon_copy.png</file>
         <file>icon_erx.png</file>
         <file>icon_refresh.png</file>
+        <file>icon_template.png</file>
     </qresource>
     <qresource prefix="/fonts">
         <file>font_RobotoCondensedRegular.ttf</file>

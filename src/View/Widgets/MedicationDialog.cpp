@@ -1,8 +1,8 @@
 ﻿#include "MedicationDialog.h"
 #include "Model/Prescription/Medication.h"
 
-MedicationDialog::MedicationDialog(MedicationPresenter* p, QWidget* parent)
-	: presenter(p), QDialog(parent)
+MedicationDialog::MedicationDialog(MedicationPresenter& p, QWidget* parent)
+    : QDialog(parent), presenter(p)
 {
 	ui.setupUi(this);
 
@@ -11,53 +11,40 @@ MedicationDialog::MedicationDialog(MedicationPresenter* p, QWidget* parent)
 	ui.medicationEdit->setCompletions(Medication::names());
 	ui.medicationEdit->setInputValidator(&nameValidator);
 
+	ui.formLabel->setText("*името на медикамента се изписва на латиница");
+
+	ui.templateButton->setIcon(QIcon(":/icons/icon_template.png"));
 	ui.deleteButton->setDisabled(true);
 	ui.editButton->setDisabled(true);
 
-	connect(ui.quantity, &QSpinBox::valueChanged, [&] { commonDataChanged(); });
-	connect(ui.quantityValue, &QComboBox::currentIndexChanged, [&] { commonDataChanged(); });
-	connect(ui.substitutionCheck, &QCheckBox::stateChanged, [&](bool state) { commonDataChanged(); });
-	connect(ui.priorityCombo, &QComboBox::currentIndexChanged, [=](int index) { presenter->priorityChanged(index); });
-	connect(ui.notesEdit, &QLineEdit::textChanged, [=](const QString& text) { presenter->noteChanged(text.toStdString());});
+    connect(ui.quantity, &QSpinBox::valueChanged, this, [&] { commonDataChanged(); });
+    connect(ui.quantityValue, &QComboBox::currentIndexChanged, this, [&] { commonDataChanged(); });
+    connect(ui.substitutionCheck, &QCheckBox::stateChanged, [&]{ commonDataChanged(); });
+    connect(ui.priorityCombo, &QComboBox::currentIndexChanged, this, [&](int index) { presenter.priorityChanged(index); });
+    connect(ui.notesEdit, &QLineEdit::textChanged, this, [&](const QString& text) { presenter.noteChanged(text.toStdString());});
 
-	connect(ui.medicationEdit, &QLineEdit::textChanged, [=](const QString& text) { 
-			presenter->medicationChanged(text.toStdString());
+    connect(ui.medicationEdit, &QLineEdit::textChanged, this, [&](const QString& text) {
+            presenter.medicationChanged(text.toStdString());
 		});
 
-	auto dosePeriodGetter = [=] {
 
-		auto checked = ui.periodGroup->isChecked();
-
-		if (!checked) {
-			presenter->dosePeriodChanged({});
-			return;
-		};
-
-		presenter->dosePeriodChanged(
-			DosePeriod{
-				.from = ui.fromDate->getDate(),
-				.to = ui.toDate->getDate(),
-			}
-		);
-	};
-
-	connect(ui.periodGroup, &QGroupBox::clicked, [=]{ dosePeriodGetter(); });
-	connect(ui.fromDate, &QDateEdit::dateChanged, [=] { dosePeriodGetter(); });
-	connect(ui.toDate, &QDateEdit::dateChanged, [=] { dosePeriodGetter(); });
-
-	connect(ui.addButton, &QPushButton::clicked, [=] {presenter->addDosage();});
-	connect(ui.editButton, &QPushButton::clicked, [=] {presenter->editDosage(ui.dosageList->currentRow());});
-	connect(ui.dosageList, &QListWidget::doubleClicked, [=] {ui.editButton->click();});
-	connect(ui.deleteButton, &QPushButton::clicked, [=] { presenter->deleteDosage(ui.dosageList->currentRow());});
-	connect(ui.okButton, &QPushButton::clicked, [&] {presenter->okPressed();});
-	connect(ui.cancelButton, &QPushButton::clicked, [&] {close();});
-	connect(ui.dosageList, &QListWidget::itemSelectionChanged, [&] {
+    connect(ui.periodGroup, &QGroupBox::clicked, this, [&]{ periodChanged(); });
+    connect(ui.fromDate, &QDateEdit::dateChanged, this, [&] { periodChanged(); });
+    connect(ui.toDate, &QDateEdit::dateChanged, this, [&] { periodChanged(); });
+	connect(ui.templateButton, &QPushButton::clicked, this, [&] {presenter.addAsTemplate(); });
+    connect(ui.addButton, &QPushButton::clicked, this, [&] {presenter.addDosage();});
+    connect(ui.editButton, &QPushButton::clicked, this, [&] {presenter.editDosage(ui.dosageList->currentRow());});
+    connect(ui.dosageList, &QListWidget::doubleClicked, this, [&] {ui.editButton->click();});
+    connect(ui.deleteButton, &QPushButton::clicked, this, [&] { presenter.deleteDosage(ui.dosageList->currentRow());});
+    connect(ui.okButton, &QPushButton::clicked, this, [&] {presenter.okPressed();});
+    connect(ui.cancelButton, &QPushButton::clicked, this, [&] {close();});
+    connect(ui.dosageList, &QListWidget::itemSelectionChanged, this, [&] {
 
 		bool noSelection = ui.dosageList->selectedItems().empty();
 		ui.editButton->setDisabled(noSelection);
 		ui.deleteButton->setDisabled(noSelection);
 		});
-	presenter->setView(this);
+    presenter.setView(this);
 }
 
 void MedicationDialog::setQuantityListNames(const std::string& pack, const std::string& form)
@@ -69,7 +56,7 @@ void MedicationDialog::setQuantityListNames(const std::string& pack, const std::
 void MedicationDialog::setFormLabel(const std::string& formName)
 {
 	if (formName.empty()) {
-		ui.formLabel->setText("");
+		ui.formLabel->setText("Невалиден медикамент");
 		return;
 	}
 
@@ -80,18 +67,18 @@ void MedicationDialog::setDosageList(const std::vector<std::string> dosageList)
 {
 	ui.dosageList->clear();
 
-	for (auto dosage : dosageList) {
+    for (auto& dosage : dosageList) {
 		ui.dosageList->addItem(dosage.c_str());
 	}
 
-	ui.dosageList->setCurrentRow(ui.dosageList->count() - 1);
+	ui.dosageList->setCurrentRow(ui.dosageList->count()-1);
 }
 
 void MedicationDialog::setReadOnly()
 {
 	QList<QWidget*> widgets = this->findChildren<QWidget*>();
 
-	foreach(QWidget * widget, widgets)
+	foreach(QWidget *widget, widgets)
 	{
 		auto label = qobject_cast<QLabel*>(widget);
 
@@ -99,7 +86,7 @@ void MedicationDialog::setReadOnly()
 
 		widget->setEnabled(false);
 	}
-
+	ui.templateButton->setEnabled(true);
 	ui.cancelButton->setEnabled(true);
 	ui.okButton->setEnabled(true);
 }
@@ -110,14 +97,14 @@ bool MedicationDialog::fieldsAreValid()
 		ui.medicationEdit->setFocus();
 		return false;
 	}
-
+	
 	return true;
 }
 
 
 void MedicationDialog::commonDataChanged()
 {
-	presenter->commonDataChanged(
+    presenter.commonDataChanged(
 		ui.quantity->value(),
 		ui.quantityValue->currentIndex(),
 		ui.substitutionCheck->isChecked()
@@ -125,14 +112,31 @@ void MedicationDialog::commonDataChanged()
 
 }
 
-void MedicationDialog::setMedication(const Medication& m)
+void MedicationDialog::periodChanged()
+{
+    auto checked = ui.periodGroup->isChecked();
+
+    if (!checked) {
+        presenter.dosePeriodChanged({});
+        return;
+    };
+
+    presenter.dosePeriodChanged(
+        DosePeriod{
+            .from = ui.fromDate->getDate(),
+            .to = ui.toDate->getDate(),
+        }
+    );
+}
+
+void MedicationDialog::setMedication(const Medication & m)
 {
 	ui.medicationEdit->setText(m.name().c_str());
 
 	ui.medicationEdit->setValidAppearence(true);
 
-	QSignalBlocker b[6]{
-		QSignalBlocker{ui.substitutionCheck},
+	QSignalBlocker b[6]{ 
+		QSignalBlocker{ui.substitutionCheck}, 
 		QSignalBlocker{ui.quantity},
 		QSignalBlocker{ui.priorityCombo},
 		QSignalBlocker{ui.periodGroup},

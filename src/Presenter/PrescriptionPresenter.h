@@ -29,6 +29,7 @@ public:
 	void editPressed(int idx);
 	void deletePressed(int idx);
 	void eRxPressed();
+	void addTemplate();
 
 	void setFemaleProperties(bool pregnancy, bool breastfeeding);
 	void supplementsChanged(const std::string& s);

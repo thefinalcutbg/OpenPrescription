@@ -25,7 +25,7 @@ private:
 
 public:
 
-	enum Priority { Routine, Urgent, Asap, Stat};
+	enum Priority { Routine, Urgent, Asap, Stat };
 
 	Medication() {};
 	Medication(int key);
@@ -44,15 +44,17 @@ public:
 
 	bool setName(const std::string& name);
 
-	int nhisPriority() { return priority + 1;}
+	int nhisPriority() { return priority + 1; }
 
 	std::vector<std::string> dosageList() const;
 
 	const std::string& name() const;
 	const std::string& formStr() const;
+	std::string parseFullDosage() const;
+	std::string quantityParsed() const;
 
 	int getFormKey() const { return form; };
-	int getNumenclatureKey() const { return key;}
+	int getNumenclatureKey() const { return key; }
 
 	static bool isValidName(const std::string& name);
 	static const std::unordered_map<std::string, int>& names();

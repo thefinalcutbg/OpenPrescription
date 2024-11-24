@@ -187,7 +187,7 @@
          </property>
          <property name="dateTime">
           <datetime>
-           <hour>12</hour>
+           <hour>8</hour>
            <minute>0</minute>
            <second>0</second>
            <year>2000</year>
@@ -401,6 +401,28 @@
            </property>
            <property name="text">
             <string>Изтрий</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="IconButton" name="templateButton">
+           <property name="minimumSize">
+            <size>
+             <width>35</width>
+             <height>35</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>35</width>
+             <height>35</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Зареди шаблон</string>
+           </property>
+           <property name="text">
+            <string>Шаблони</string>
            </property>
           </widget>
          </item>

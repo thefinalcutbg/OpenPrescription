@@ -1,11 +1,10 @@
-#include "Medication.h"
+﻿#include "Medication.h"
 
 #include <vector>
 #include <JsonCpp/json.h>
 
 #include "Resources.h"
 #include "Database/Database.h"
-#include "Database/DbUpdateStatus.h"
 
 bool Medication::initialize()
 {
@@ -22,7 +21,7 @@ bool Medication::initialize()
     {
         s_medForms[pair["Key"].asInt()] = pair["Value"].asString();
     }
-    
+
 
     //initializing 
     Db db;
@@ -98,6 +97,50 @@ const std::string& Medication::formStr() const
     return s_medForms[form];
 }
 
+std::string Medication::parseFullDosage() const
+{
+    std::string dosageStr;
+
+    for (int i = 0; i < dosage.size(); i++) {
+
+        if (i) {
+
+            dosageStr += " След това ";
+        }
+
+        if (dosage[i].frequency == 1) {
+            dosageStr += i ? "по " : "По ";
+        }
+
+        dosageStr += dosage[i].parse();
+
+        if (dosageStr.back() == ' ') {
+            dosageStr.pop_back();
+        }
+
+        dosageStr += ".";
+    }
+
+    return dosageStr;
+}
+
+std::string Medication::quantityParsed() const
+{
+    std::string result = std::to_string(quantity);
+
+    result += " ";
+
+    if (byForm) {
+
+        result += quantity > 1 ? "лекарствени форми" : "лекарствена форма";
+    }
+    else {
+        result += quantity > 1 ? "опаковки" : "опаковка";
+    }
+
+    return result;
+}
+
 bool Medication::isValidName(const std::string& name)
 {
     return s_medNameToIdx.count(name);
@@ -110,7 +153,7 @@ const std::unordered_map<std::string, int>& Medication::names()
 
 const std::string& Medication::getFormByKey(int key)
 {
-    if(key >= 0 && key < s_medForms.size()) return s_medForms[key];
+    if (key >= 0 && key < s_medForms.size()) return s_medForms[key];
 
     return s_dummyResult;
 }

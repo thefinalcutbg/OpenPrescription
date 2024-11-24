@@ -4,4 +4,5 @@ CREATE TABLE IF NOT EXISTS prescription (rowid INTEGER PRIMARY KEY NOT NULL, pat
 CREATE TABLE IF NOT EXISTS medication (rowid INTEGER PRIMARY KEY NOT NULL, prescription_rowid INTEGER REFERENCES prescription (rowid) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL, numMed_rowid INTEGER NOT NULL, is_form BOOLEAN NOT NULL, quantity INT NOT NULL, priority INT, substitution BOOLEAN, notes VARCHAR (2000), dosage TEXT, from_date TEXT, to_date TEXT);
 CREATE TABLE IF NOT EXISTS doctor(lpk VARCHAR(10) NOT NULL, rzi VARCHAR(10) NOT NULL, fname VARCHAR(50) NOT NULL, lname VARCHAR(50) NOT NULL, phone VARCHAR NOT NULL, specialty INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS num_update(name VARCHAR NOT NULL UNIQUE, date TEXT NOT NULL);
-PRAGMA user_version = 3;
+CREATE TABLE medication_template (rowid INTEGER PRIMARY KEY NOT NULL, numMed_rowid INTEGER NOT NULL, is_form BOOLEAN NOT NULL, quantity INT NOT NULL, priority INT, substitution BOOLEAN, notes VARCHAR (2000), dosage TEXT);
+PRAGMA user_version = 5;

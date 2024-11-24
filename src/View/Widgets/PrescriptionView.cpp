@@ -12,11 +12,13 @@ PrescriptionView::PrescriptionView(QWidget* parent)
 	ui.deleteButton->setIcon(QIcon(":/icons/icon_remove.png"));
 	ui.editButton->setIcon(QIcon(":/icons/icon_edit.png"));
 	ui.eRxButton->setIcon(QIcon(":/icons/icon_erx.png"));
+	ui.templateButton->setIcon(QIcon(":/icons/icon_template.png"));
 
 	ui.addButton->setHoverColor(Theme::mainBackgroundColor);
 	ui.deleteButton->setHoverColor(Theme::mainBackgroundColor);
 	ui.editButton->setHoverColor(Theme::mainBackgroundColor);
 	ui.eRxButton->setHoverColor(Theme::mainBackgroundColor);
+	ui.templateButton->setHoverColor(Theme::mainBackgroundColor);
 
 	ui.medicationTable->setModel(&medModel);
 
@@ -24,9 +26,9 @@ PrescriptionView::PrescriptionView(QWidget* parent)
 
 	setStyleSheet(Theme::getFancyStylesheet());
 
-	connect(ui.addButton, &QPushButton::clicked, [=] {if (presenter)presenter->addPressed(); });
-	connect(ui.editButton, &QPushButton::clicked, [=] {if (presenter)presenter->editPressed(ui.medicationTable->selectedRow()); });
-	connect(ui.deleteButton, &QPushButton::clicked, [=] {
+    connect(ui.addButton, &QPushButton::clicked, this, [=, this] {if (presenter)presenter->addPressed();});
+    connect(ui.editButton, &QPushButton::clicked, this, [=, this] {if (presenter)presenter->editPressed(ui.medicationTable->selectedRow());});
+    connect(ui.deleteButton, &QPushButton::clicked, this, [=, this] {
 
 		if (!presenter) return;
 
@@ -43,17 +45,18 @@ PrescriptionView::PrescriptionView(QWidget* parent)
 
 		});
 
-	connect(ui.medicationTable, &TableView::deletePressed, [=](int index) { if (presenter) presenter->deletePressed(index); });
-	connect(ui.medicationTable, &TableView::editPressed, [=](int index) { if (presenter) presenter->editPressed(index); });
+    connect(ui.medicationTable, &TableView::deletePressed, this, [=, this](int index) { if (presenter) presenter->deletePressed(index); });
+    connect(ui.medicationTable, &TableView::editPressed, this, [=, this](int index) { if (presenter) presenter->editPressed(index); });
 	connect(ui.dispensationCombo, &QComboBox::currentIndexChanged, [&] { dispensationLogic(); });
 	connect(ui.repeats, &QSpinBox::valueChanged, [&] { if (ui.repeats->isHidden()) return; dispensationLogic(); });
-	connect(ui.supplementsEdit, &QLineEdit::textChanged, [=](const QString& text) {if (presenter) presenter->supplementsChanged(text.toStdString()); });
-	connect(ui.nrnButton, &QPushButton::clicked, [=] {if (presenter) presenter->nrnButtonClicked(); });
-	connect(ui.dateEdit, &QDateEdit::dateChanged, [=](QDate d) {if (presenter) presenter->dateChanged(Date{ d.day(),d.month(),d.year() }); });
-	connect(ui.checkStatusButton, &QPushButton::clicked, [=] { if (presenter) presenter->checkStatus(); });
-	connect(ui.pregnancyCheck, &QCheckBox::stateChanged, [=] { sendFemaleProperties(); });
-	connect(ui.breastfeedingCheck, &QCheckBox::stateChanged, [=] { sendFemaleProperties(); });
-	connect(ui.eRxButton, &QPushButton::clicked, [=] { if (presenter) presenter->eRxPressed(); });
+    connect(ui.supplementsEdit, &QLineEdit::textChanged, this, [=, this](const QString& text) {if (presenter) presenter->supplementsChanged(text.toStdString());});
+    connect(ui.nrnButton, &QPushButton::clicked, this, [=, this] {if (presenter) presenter->nrnButtonClicked(); });
+    connect(ui.dateEdit, &QDateEdit::dateChanged, this, [=, this](QDate d) {if (presenter) presenter->dateChanged(Date{ d.day(),d.month(),d.year() });});
+    connect(ui.checkStatusButton, &QPushButton::clicked, this, [=, this]{ if (presenter) presenter->checkStatus(); });
+    connect(ui.pregnancyCheck, &QCheckBox::stateChanged, this, [=, this] { sendFemaleProperties(); });
+    connect(ui.breastfeedingCheck, &QCheckBox::stateChanged, this, [=, this] { sendFemaleProperties(); });
+    connect(ui.eRxButton, &QPushButton::clicked, this, [=, this] { if (presenter) presenter->eRxPressed(); });
+	connect(ui.templateButton, &QPushButton::clicked, this, [=, this] { if (presenter) presenter->addTemplate(); });
 }
 
 IPatientTileInfo* PrescriptionView::patientTile()
@@ -64,6 +67,7 @@ IPatientTileInfo* PrescriptionView::patientTile()
 void PrescriptionView::setMedicationList(const std::vector<std::string> rows)
 {
 	medModel.setRows(rows);
+	ui.medicationTable->selectRow(rows.size() - 1);
 }
 
 void PrescriptionView::dispensationLogic()
@@ -74,38 +78,37 @@ void PrescriptionView::dispensationLogic()
 
 	switch (dispensationIdx)
 	{
-	case 0:
-	{
-		ui.repeats->hide();
-		ui.repeatsLabel->hide();
-		ui.repeats->setValue(1);
-		break;
-	}
-	case 1:
-	{
-		ui.repeats->show();
-		int repeats = ui.repeats->value();
-		ui.repeatsLabel->show();
-		break;
-	}
-	case 2:
-	{
-		ui.repeats->hide();
-		ui.repeatsLabel->hide();
-		ui.repeats->setValue(1);
-		break;
-	}
+		case 0:
+		{
+			ui.repeats->hide();
+			ui.repeatsLabel->hide();
+			ui.repeats->setValue(1);
+			break;
+		}
+		case 1:
+		{
+			ui.repeats->show();
+			ui.repeatsLabel->show();
+			break;
+		}
+		case 2:
+		{
+			ui.repeats->hide();
+			ui.repeatsLabel->hide();
+			ui.repeats->setValue(1);
+			break;
+		}
 	}
 
 	presenter->dispensationChanged(
-		Dispensation{
+		Dispensation{ 
 			static_cast<Dispensation::Type>(dispensationIdx),
 			ui.repeats->value()
 		});
 
 }
 
-void PrescriptionView::paintEvent(QPaintEvent* event)
+void PrescriptionView::paintEvent(QPaintEvent*)
 {
 	QPainter painter(this);
 
@@ -129,7 +132,7 @@ void PrescriptionView::setDispensation(const Dispensation& d)
 
 	ui.dispensationCombo->setCurrentIndex(static_cast<int>(d.type));
 	ui.repeats->setValue(d.repeats);
-
+	
 	ui.repeats->setHidden(d.type != Dispensation::Type::MultipleUse);
 	ui.repeatsLabel->setHidden(d.type != Dispensation::Type::MultipleUse);
 }
@@ -148,6 +151,7 @@ void PrescriptionView::setDate(const Date& d)
 
 void PrescriptionView::setNrn(const std::string& nrn)
 {
+
 	bool readOnly = nrn.size();
 
 	ui.addButton->setHidden(readOnly);
@@ -162,6 +166,7 @@ void PrescriptionView::setNrn(const std::string& nrn)
 	ui.pregnancyCheck->setDisabled(readOnly);
 	ui.breastfeedingCheck->setDisabled(readOnly);
 	ui.eRxButton->setHidden(readOnly);
+	ui.templateButton->setHidden(readOnly);
 
 	if (nrn.empty()) {
 
