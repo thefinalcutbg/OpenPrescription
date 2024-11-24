@@ -47,6 +47,7 @@ bool isValidCertificate(PKCS11_cert_st* cert)
 
 
 const std::vector<std::string> modules{
+	"C:/Windows/System32/eTPKCS11.dll",
 	"C:/Program Files/OpenSC Project/OpenSC/pkcs11/opensc-pkcs11.dll",
 	"C:/Program Files/SafeNet/Authentication/SAC/x64/IDPrimePKCS1164.dll",
 	"C:/Windows/System32/OcsPKCS11Wrapper.dll",
